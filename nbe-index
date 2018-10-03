@@ -1,0 +1,41 @@
+#!/usr/bin/env node
+
+let path = require('path')
+let lib = require('./lib')
+
+let files = process.argv.slice(2).map(path.normalize)
+let pp = files.filter(is_page).filter(is_md)
+let fp = files.filter( v => !is_page(v)).filter(is_md)
+
+process.stdout.write(JSON.stringify({
+    posts: sort_by_file_name(fp.map(post)),
+    pages: pp.map(page)
+}))
+
+
+function is_page(file) { return /^pages\b/.test(file) }
+function is_md(file) { return '.md' === path.extname(file) }
+
+function post(file) {
+    return parse(file, [{
+	attr: 'subject',
+	fn: v => !lib.is_str_empty(v)
+    }, {
+	attr: 'authors',
+	fn: v => v.length !== 0
+    }])
+}
+
+function page(file) { return parse(file) }
+
+function parse(file, required_attrs) {
+    let mp = new lib.MarkdownParser(file)
+    return {[file]: mp.front_matter(required_attrs)}
+}
+
+function sort_by_file_name(list) {
+    return list.sort( (a, b) => {
+	[a, b] = [a, b].map( v => Object.keys(v)[0])
+	return a.localeCompare(b)
+    })
+}
