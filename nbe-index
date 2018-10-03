@@ -18,9 +18,6 @@ function is_md(file) { return '.md' === path.extname(file) }
 
 function post(file) {
     return parse(file, [{
-	attr: 'subject',
-	fn: v => !lib.is_str_empty(v)
-    }, {
 	attr: 'authors',
 	fn: v => v.length !== 0
     }])

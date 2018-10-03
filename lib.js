@@ -38,6 +38,8 @@ exports.MarkdownParser = class {
 		throw new Error(`${this.file}: no ${val.attr}`)
 	}
 
+	if (exports.is_str_empty(attrs.subject)) attrs.subject = 'Untitled'
+
 	return attrs
     }
 }
