@@ -27,12 +27,11 @@ function page(file) { return parse(file) }
 
 function parse(file, required_attrs) {
     let mp = new lib.MarkdownParser(file)
-    return {[file]: mp.front_matter(required_attrs)}
+    return Object.assign({file}, mp.front_matter(required_attrs))
 }
 
 function sort_by_file_name(list) {
     return list.sort( (a, b) => {
-	[a, b] = [a, b].map( v => Object.keys(v)[0])
-	return a.localeCompare(b)
+	return a.file.localeCompare(b.file)
     })
 }
