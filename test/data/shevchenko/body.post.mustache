@@ -1,8 +1,12 @@
 <article>
 
   <nav>
-    <a href='{{{prev.link}}}'>{{prev.subject}}</a>
-    <a href='{{{next.link}}}'>{{next.subject}}</a>
+    {{#prev}}
+    <a href="{{{prev.link}}}" title="{{prev.subject}}">prev</a>
+    {{/prev}}
+    {{#next}}
+    <a href="{{{next.link}}}" title="{{next.subject}}">next</a>
+    {{/next}}
   </nav>
 
   <h2>{{ subject }}</h2>
