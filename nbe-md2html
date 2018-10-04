@@ -7,7 +7,7 @@ let lib = require('./lib')
 
 let argv = process.argv.slice(2)
 if (argv.length !== 6) {
-    console.log('Usage:', path.basename(process.argv[1]), 'file.md index.json config.json header.mustache body.mustache footer.mustache')
+    console.error('Usage:', path.basename(process.argv[1]), 'file.md index.json config.json header.mustache body.mustache footer.mustache')
     process.exit(1)
 }
 
@@ -22,10 +22,11 @@ function convert(file, index, config, header, body, footer) {
     let mp = new lib.MarkdownParser(file)
     let view = Object.assign(mp.front_matter(), {
 	file,
+	root: rootdir(file),
 	config,
 	prev: prev_or_next(file, index, cur => cur-1),
 	next: prev_or_next(file, index, cur => cur+1),
-	calendar: calendar(file, index),
+	contents: contents(file, index),
 	body: mp.body()
     })
 
@@ -40,13 +41,67 @@ function prev_or_next(file, index, condition) {
     if (lib.is_page(file)) return
 
     let cur = index.posts.findIndex( v => v.file === file)
-    let idx = cur + condition(cur)
+    let idx = condition(cur)
     if (cur !== -1 && idx >= 0 && idx <= index.posts.length-1) return {
-	link: index.posts[idx].file.replace(/\.md$/, '.html'),
+	link: file2link(index.posts[idx].file),
 	subject: index.posts[idx].subject,
     }
 }
 
-function calendar(file, index) {
-    return 'todo'
+function rootdir(file) { return path.dirname(file).replace(/[^/]+/g, '..') }
+
+function file2link(file, relativeto) {
+    return path.join(rootdir(relativeto || file),
+		     file.replace(/\.md$/, '.html'))
+}
+
+function contents(file, index) {
+    let tnode = (src, node_path) => {
+	let root = new lib.TNode("root")
+	src.forEach( val => {
+	    let npath = node_path(val.file)
+	    root.insert(npath, val)
+
+	    // mark the node & its ancestors as "selected"
+	    if (file === val.file) {
+		let leaf = root.find(...npath)
+		while (leaf) {
+		    leaf.selected = true
+		    leaf = leaf.parent
+		}
+	    }
+	})
+	return root
+    }
+    let node_path_posts = file => {
+	let [y,m,d,n] = file.split(path.sep)
+	return [y, m, path.join(d,n)]
+    }
+    let node_path_pages = file => {
+	return file.split(path.sep).slice(1)
+    }
+
+    return {
+	posts: tree(tnode(index.posts, node_path_posts), file),
+	pages: tree(tnode(index.pages, node_path_pages), file),
+    }
+}
+
+function tree(tnode, file) {
+    let r = []
+    tnode.kids.forEach( kid => {
+	r.push(`<details ${kid.selected ? 'open' : ''}>`)
+	if (!kid.kids.length) {
+	    if (kid.selected)
+		r.push(Mustache.render('<summary class="selected">{{subject}}</summary>', {subject: kid.payload.subject}))
+	    else
+		r.push(Mustache.render('<summary><a href="{{{link}}}">{{subject}}</a></summary>', {link: file2link(kid.payload.file, file), subject: kid.payload.subject}))
+	} else {
+	    r.push(Mustache.render('<summary>{{name}}</summary>',
+				   {name: kid.name}))
+	    r.push(tree(kid, file))
+	}
+	r.push('</details>')
+    })
+    return r.join('\n')
 }

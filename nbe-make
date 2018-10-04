@@ -4,23 +4,34 @@ src := .
 out := _out
 
 mk := $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
+all.src := $(filter-out $(src)/config.json \
+	$(src)/header.mustache $(src)/body.%.mustache \
+	$(src)/footer.mustache, \
+	$(shell find $(src) ! -path '$(src)/$(out)/*' -type f))
+all.dest := $(patsubst $(src)/%, $(out)/%, $(all.src))
+html.dest := $(patsubst %.md, %.html, $(filter %.md, $(all.dest)))
+static.dest := $(filter-out %.md, $(all.dest))
+
+.PHONY: compile
+compile: $(html.dest) $(static.dest)
 
 $(out)/%.html: $(src)/%.md $(out)/index.json $(src)/config.json $(src)/header.mustache $(src)/body.post.mustache $(src)/footer.mustache
 	$(mkdir)
 	$(mk)/nbe-md2html $^ > $@
 
-# pages.src := $(shell find $(src)/pages -type f)
-# pages.md.src := $(filter %.md, $(pages.src))
-# pages.md.dest := $(patsubst $(src)/%.md, $(out)/%.html, $(pages.md.src))
-
 $(out)/pages/%.html: $(src)/pages/%.md $(out)/index.json $(src)/config.json $(src)/header.mustache $(src)/body.page.mustache $(src)/footer.mustache
 	$(mkdir)
 	$(mk)/nbe-md2html $^ > $@
 
-mkdir = mkdir -p $(dir $@)
-
-$(out)/index.json: $(shell find $(src)/[0-9]* $(src)/pages -type f)
+$(out)/index.json: $(filter %.md, $(all.src))
 	$(mkdir)
 	$(mk)/nbe-index $^ > $@
+
+$(static.dest): $(out)/%: $(src)/%
+	$(mkdir)
+	$(copy)
+
+copy = cp $< $@
+mkdir = mkdir -p $(dir $@)
 
 .DELETE_ON_ERROR:
