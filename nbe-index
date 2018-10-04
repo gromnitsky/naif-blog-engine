@@ -4,8 +4,8 @@ let path = require('path')
 let lib = require('./lib')
 
 let files = process.argv.slice(2).map(path.normalize)
-let pp = files.filter(is_page).filter(is_md)
-let fp = files.filter( v => !is_page(v)).filter(is_md)
+let pp = files.filter(lib.is_page).filter(is_md)
+let fp = files.filter( v => !lib.is_page(v)).filter(is_md)
 
 process.stdout.write(JSON.stringify({
     posts: sort_by_file_name(fp.map(post)),
@@ -13,7 +13,6 @@ process.stdout.write(JSON.stringify({
 }))
 
 
-function is_page(file) { return /^pages\b/.test(file) }
 function is_md(file) { return '.md' === path.extname(file) }
 
 function post(file) {

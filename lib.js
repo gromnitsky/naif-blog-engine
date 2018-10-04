@@ -3,6 +3,7 @@ let front_matter = require('front-matter')
 let marked = require('marked')
 
 exports.mtime = function(file) { return fs.statSync(file).mtime.getTime() }
+exports.is_page = function(file) { return /^pages\b/.test(file) }
 
 exports.is_str_empty = function(s) {
     return !exports.is_str(s) || s.trim().length === 0
@@ -42,4 +43,6 @@ exports.MarkdownParser = class {
 
 	return attrs
     }
+
+    body() { return marked(this.md.body) }
 }
