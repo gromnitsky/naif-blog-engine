@@ -2,7 +2,7 @@
 
 let fs = require('fs')
 let path = require('path')
-let Mustache = require('mustache')
+let ejs = require('ejs')
 let lib = require('./lib')
 
 let argv = process.argv.slice(2)
@@ -22,19 +22,25 @@ function convert(file, index, config, header, body, footer) {
     let mp = new lib.MarkdownParser(file)
     let view = Object.assign(mp.front_matter(), {
 	file,
+	birthtime: birthtime(file), // posts
 	root: rootdir(file),
 	config,
-	prev: prev_or_next(file, index, cur => cur-1),
-	next: prev_or_next(file, index, cur => cur+1),
+	prev: prev_or_next(file, index, cur => cur-1), // posts
+	next: prev_or_next(file, index, cur => cur+1), // posts
 	contents: contents(file, index),
 	body: mp.body()
     })
 
-    header = Mustache.render(header, view)
-    body = Mustache.render(body, view)
-    footer = Mustache.render(footer, view)
+    header = ejs.render(header, view)
+    body = ejs.render(body, view)
+    footer = ejs.render(footer, view)
 
     return [header, body, footer].join("\n")
+}
+
+function birthtime(file) {
+    if (lib.is_page(file)) return
+    return new Date(file.split(path.sep).slice(0,3).join('-') + 'T00:00:00')
 }
 
 function prev_or_next(file, index, condition) {
@@ -93,11 +99,11 @@ function tree(tnode, file) {
 	r.push(`<details ${kid.selected ? 'open' : ''}>`)
 	if (!kid.kids.length) {
 	    if (kid.selected)
-		r.push(Mustache.render('<summary class="selected">{{subject}}</summary>', {subject: kid.payload.subject}))
+		r.push(ejs.render('<summary class="selected"><%= subject %></summary>', {subject: kid.payload.subject}))
 	    else
-		r.push(Mustache.render('<summary><a href="{{{link}}}">{{subject}}</a></summary>', {link: file2link(kid.payload.file, file), subject: kid.payload.subject}))
+		r.push(ejs.render('<summary><a href="<%= link %>"><%= subject %></a></summary>', {link: file2link(kid.payload.file, file), subject: kid.payload.subject}))
 	} else {
-	    r.push(Mustache.render('<summary>{{name}}</summary>',
+	    r.push(ejs.render('<summary><%= name %></summary>',
 				   {name: kid.name}))
 	    r.push(tree(kid, file))
 	}

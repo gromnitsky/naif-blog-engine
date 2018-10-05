@@ -1,0 +1,24 @@
+<article>
+
+  <% if (birthtime) { %>
+  <nav>
+    <% if (prev) { %><a href="<%= prev.link %>" title="<%= prev.subject %>">prev</a><% } %>
+    <% if (next) { %><a href="<%= next.link %>" title="<%= next.subject %>">next</a><% } %>
+  </nav>
+  <% } %>
+
+  <h2><%= subject %></h2>
+
+  <p>Latest update: <%= new Date(mtime).toLocaleString() %></p>
+
+  <%- body %>
+
+  <% if (tags.length) { %>
+  <p>Tags:</p>
+  <% } %>
+
+  <% if (authors.length) { %>
+  <p>Authors:</p>
+  <% } %>
+
+</article>
