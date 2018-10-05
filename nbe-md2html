@@ -19,8 +19,7 @@ process.stdout.write(convert(argv[0], index, config, header, body, footer))
 
 
 function convert(file, index, config, header, body, footer) {
-    let mp = new lib.MarkdownParser(file)
-    let view = Object.assign(mp.front_matter(), {
+    let view = {
 	file,
 	birthtime: birthtime(file), // posts
 	root: rootdir(file),
@@ -28,8 +27,20 @@ function convert(file, index, config, header, body, footer) {
 	prev: prev_or_next(file, index, cur => cur-1), // posts
 	next: prev_or_next(file, index, cur => cur+1), // posts
 	contents: contents(file, index),
-	body: mp.body()
-    })
+	authors: lib.index_group_by(index, 'authors'),
+	tags: lib.index_group_by(index, 'tags')
+    }
+
+    let fm
+    let mp = new lib.MarkdownParser(file)
+    try {
+	fm = mp.front_matter()
+    } catch (e) {
+	// authors/tags file
+	let type = path.dirname(file)
+	view.subject = authors_tags(view[type+'s'], path.basename(file))
+    }
+    if (fm) view = Object.assign(view, fm, { body: mp.body() })
 
     header = ejs.render(header, view)
     body = ejs.render(body, view)
@@ -38,13 +49,20 @@ function convert(file, index, config, header, body, footer) {
     return [header, body, footer].join("\n")
 }
 
+function authors_tags(groups, target) {
+    for (let candidate of Object.keys(groups)) {
+	if (target === lib.md5(candidate)) return candidate
+    }
+    throw new Error(`failed to find ${target}`)
+}
+
 function birthtime(file) {
-    if (lib.is_page(file)) return
+    if (!lib.is_post(file)) return
     return new Date(file.split(path.sep).slice(0,3).join('-') + 'T00:00:00')
 }
 
 function prev_or_next(file, index, condition) {
-    if (lib.is_page(file)) return
+    if (!lib.is_post(file)) return
 
     let cur = index.posts.findIndex( v => v.file === file)
     let idx = condition(cur)

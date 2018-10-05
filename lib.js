@@ -1,9 +1,11 @@
+let crypto = require('crypto')
 let fs = require('fs')
 let front_matter = require('front-matter')
 let marked = require('marked')
 
 exports.mtime = function(file) { return fs.statSync(file).mtime.getTime() }
 exports.is_page = function(file) { return /^pages\b/.test(file) }
+exports.is_post = function(file) { return /^\d{4}\/\d{2}\/\d{2}\b/.test(file) }
 
 exports.is_str_empty = function(s) {
     return !exports.is_str(s) || s.trim().length === 0
@@ -40,11 +42,28 @@ exports.MarkdownParser = class {
 	}
 
 	if (exports.is_str_empty(attrs.subject)) attrs.subject = 'Untitled'
+	if (!attrs.authors.length) attrs.authors.push('anonymous')
+	if (!attrs.tags.length) attrs.tags.push('untagged')
 
 	return attrs
     }
 
     body() { return marked(this.md.body) }
+}
+
+exports.index_group_by = function(index, prop) {
+    let articles = index.posts.concat(index.pages)
+    return articles.reduce( (result, article) => {
+	article[prop].forEach( val => {
+	    if (!Array.isArray(result[val])) result[val] = []
+	    result[val].push(article)
+	})
+	return result
+    }, {})
+}
+
+exports.md5 = function(data) {
+    return crypto.createHash('md5').update(data).digest('hex')
 }
 
 // Everybody loves trees!

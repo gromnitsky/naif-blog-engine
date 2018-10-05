@@ -1,0 +1,15 @@
+<article>
+
+  <h2><%= subject %></h2>
+
+  <p>Total: <%= authors[subject].length %></p>
+
+  <ul>
+  <% for (let val of authors[subject]) { %>
+  <li>
+    <%= val.subject %>
+  </li>
+  <% } %>
+  </ul>
+
+</article>

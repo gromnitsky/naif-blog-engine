@@ -1,0 +1,19 @@
+#!/usr/bin/env node
+
+let fs = require('fs')
+let path = require('path')
+let lib = require('./lib')
+
+if (process.argv.length !== 2+2) {
+    console.error('Usage:', path.basename(process.argv[1]), 'index.json output-dir')
+    process.exit(1)
+}
+
+let index = JSON.parse(fs.readFileSync(process.argv[2]).toString())
+let out = process.argv[3]
+console.log(Object.keys(lib.index_group_by(index, 'authors'))
+	    .map( v => 'compile: ' + path.join(out, 'a', `${lib.md5(v)}.html`))
+	    .join("\n"))
+console.log(Object.keys(lib.index_group_by(index, 'tags'))
+	    .map( v => 'compile: ' + path.join(out, 't', `${lib.md5(v)}.html`))
+	    .join("\n"))
