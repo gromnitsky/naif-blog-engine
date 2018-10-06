@@ -32,7 +32,7 @@ exports.MarkdownParser = class {
 	    return str.split(/,+/).map(v => v.replace(/\s+/, ' ').trim())
 	}
 
-	attrs.authors = arrarify(attrs.authors).map( v => v.toLowerCase())
+	attrs.authors = arrarify(attrs.authors)
 	attrs.tags = arrarify(attrs.tags).map( v => v.toLowerCase())
 	attrs.mtime = exports.mtime(this.file)
 

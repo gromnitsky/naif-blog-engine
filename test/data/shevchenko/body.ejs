@@ -14,11 +14,11 @@
   <%- body %>
 
   <% if (tags.length) { %>
-  <p>Tags:</p>
+  <br>Tags: <%- metatags_inline(file, 'tags', tags) %>
   <% } %>
 
   <% if (authors.length) { %>
-  <p>Authors:</p>
+  <br>Authors: <%- metatags_inline(file, 'authors', authors) %>
   <% } %>
 
 </article>

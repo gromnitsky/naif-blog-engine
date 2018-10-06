@@ -28,7 +28,8 @@ function convert(file, index, config, header, body, footer) {
 	next: prev_or_next(file, index, cur => cur+1), // posts
 	contents: contents(file, index),
 	authors: lib.index_group_by(index, 'authors'),
-	tags: lib.index_group_by(index, 'tags')
+	tags: lib.index_group_by(index, 'tags'),
+	metatags_inline,
     }
 
     let fm
@@ -49,8 +50,8 @@ function convert(file, index, config, header, body, footer) {
     return [header, body, footer].join("\n")
 }
 
-function authors_tags(groups, target) {
-    for (let candidate of Object.keys(groups)) {
+function authors_tags(group, target) {
+    for (let candidate of Object.keys(group)) {
 	if (target === lib.md5(candidate)) return candidate
     }
     throw new Error(`failed to find ${target}`)
@@ -105,27 +106,41 @@ function contents(file, index) {
 	return file.split(path.sep).slice(1)
     }
 
+    function tree(tnode, file) {
+	let r = []
+	tnode.kids.forEach( kid => {
+	    r.push(`<details ${kid.selected ? 'open' : ''}>`)
+	    if (!kid.kids.length) {
+		if (kid.selected)
+		    r.push(ejs.render('<summary class="selected"><%= subject %></summary>', {subject: kid.payload.subject}))
+		else
+		    r.push(ejs.render('<summary><a href="<%= link %>"><%= subject %></a></summary>', {link: file2link(kid.payload.file, file), subject: kid.payload.subject}))
+	    } else {
+		r.push(ejs.render('<summary><%= name %></summary>',
+				  {name: kid.name}))
+		r.push(tree(kid, file))
+	    }
+	    r.push('</details>')
+	})
+	return r.join('\n')
+    }
+
     return {
 	posts: tree(tnode(index.posts, node_path_posts), file),
 	pages: tree(tnode(index.pages, node_path_pages), file),
     }
 }
 
-function tree(tnode, file) {
-    let r = []
-    tnode.kids.forEach( kid => {
-	r.push(`<details ${kid.selected ? 'open' : ''}>`)
-	if (!kid.kids.length) {
-	    if (kid.selected)
-		r.push(ejs.render('<summary class="selected"><%= subject %></summary>', {subject: kid.payload.subject}))
-	    else
-		r.push(ejs.render('<summary><a href="<%= link %>"><%= subject %></a></summary>', {link: file2link(kid.payload.file, file), subject: kid.payload.subject}))
-	} else {
-	    r.push(ejs.render('<summary><%= name %></summary>',
-				   {name: kid.name}))
-	    r.push(tree(kid, file))
-	}
-	r.push('</details>')
-    })
-    return r.join('\n')
+function metatags_inline(file, type, list) {
+    return list.map( val => {
+	return ejs.render('<a href="<%= link %>"><%= text %></a>', {
+	    text: val,
+	    link: metatags_link(file, type, val)
+	})
+    }).join(", ")
+}
+
+function metatags_link(relativeto, type, template) {
+    let prefix = { tags: 't', authors: 'a' }[type]
+    return path.join(rootdir(relativeto), prefix, lib.md5(template) + '.html')
 }
