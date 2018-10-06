@@ -4,12 +4,30 @@
 
   <p>Total: <%= tags[subject].length %></p>
 
-  <ul>
-  <% for (let val of tags[subject]) { %>
-  <li>
-    <%= val.subject %> (<%= val.authors %>)
-  </li>
-  <% } %>
-  </ul>
+  <table>
+    <thead>
+      <th style="width: 20%">Air Date</th>
+      <th>Subject</th>
+      <th style="width: 30%">Authors</th></thead>
+    <tbody>
+      <% for (let val of posts_sort_by_date(tags[subject])) { %>
+      <tr>
+
+	<% if (is_post(val.file)) { %>
+	<td>
+	  <%= [birthtime(val.file).getFullYear(), birthtime(val.file).getMonth()+1, birthtime(val.file).getDate()].join('-') %>
+	</td>
+	<% } else { %>
+	<td></td>
+	<% } %>
+
+      <td><a href="<%= link(val.file, file) %>"><%= val.subject %></a></td>
+
+      <td><%- metatags_inline(file, 'authors', val.authors) %></td>
+
+      </tr>
+      <% } %>
+    </tbody>
+  </table>
 
 </article>

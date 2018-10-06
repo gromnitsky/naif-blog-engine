@@ -20,17 +20,30 @@ process.stdout.write(convert(argv[0], index, config, header, body, footer))
 
 function convert(file, index, config, header, body, footer) {
     let view = {
+	// posts only
+	post_birthtime: birthtime(file),
+	prev: prev_or_next(file, index, cur => cur-1),
+	next: prev_or_next(file, index, cur => cur+1),
+
 	file,
-	birthtime: birthtime(file), // posts
 	root: rootdir(file),
 	config,
-	prev: prev_or_next(file, index, cur => cur-1), // posts
-	next: prev_or_next(file, index, cur => cur+1), // posts
 	contents: contents(file, index),
+
+	// metatags only, in post/pages this gets overwritten by a local value
 	authors: lib.index_group_by(index, 'authors'),
 	tags: lib.index_group_by(index, 'tags'),
+
+	// posts & pages only
 	get tags_inline() { return metatags_inline(file, 'tags', this.tags) },
-	get authors_inline() { return metatags_inline(file, 'authors', this.authors) }
+	get authors_inline() { return metatags_inline(file, 'authors', this.authors) },
+
+	// helpers
+	metatags_inline,
+	is_post: lib.is_post,
+	birthtime: birthtime,
+	link,
+	posts_sort_by_date,
     }
 
     let fm
@@ -69,14 +82,14 @@ function prev_or_next(file, index, condition) {
     let cur = index.posts.findIndex( v => v.file === file)
     let idx = condition(cur)
     if (cur !== -1 && idx >= 0 && idx <= index.posts.length-1) return {
-	link: file2link(index.posts[idx].file),
+	link: link(index.posts[idx].file),
 	subject: index.posts[idx].subject,
     }
 }
 
 function rootdir(file) { return path.dirname(file).replace(/[^/]+/g, '..') }
 
-function file2link(file, relativeto) {
+function link(file, relativeto) {
     return path.join(rootdir(relativeto || file),
 		     file.replace(/\.md$/, '.html'))
 }
@@ -115,7 +128,7 @@ function contents(file, index) {
 		if (kid.selected)
 		    r.push(ejs.render('<summary class="selected"><%= subject %></summary>', {subject: kid.payload.subject}))
 		else
-		    r.push(ejs.render('<summary><a href="<%= link %>"><%= subject %></a></summary>', {link: file2link(kid.payload.file, file), subject: kid.payload.subject}))
+		    r.push(ejs.render('<summary><a href="<%= link %>"><%= subject %></a></summary>', {link: link(kid.payload.file, file), subject: kid.payload.subject}))
 	    } else {
 		r.push(ejs.render('<summary><%= name %></summary>',
 				  {name: kid.name}))
@@ -144,4 +157,10 @@ function metatags_inline(file, type, list) {
 function metatags_link(relativeto, type, template) {
     let prefix = { tags: 't', authors: 'a' }[type]
     return path.join(rootdir(relativeto), prefix, lib.md5(template) + '.html')
+}
+
+function posts_sort_by_date(posts, ascending = false) {
+    return posts.sort( (a, b) => {
+	return ascending ? birthtime(a.file) - birthtime(b.file) : birthtime(b.file) - birthtime(a.file)
+    })
 }
