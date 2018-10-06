@@ -29,10 +29,10 @@ function convert(file, index, config, header, body, footer) {
 	root: rootdir(file),
 	config,
 	contents: contents(file, index),
-
-	// metatags only, in post/pages this gets overwritten by a local value
-	authors: lib.index_group_by(index, 'authors'),
-	tags: lib.index_group_by(index, 'tags'),
+	authors_group: lib.index_group_by(index, 'authors'),
+	tags_group: lib.index_group_by(index, 'tags'),
+	get authors_list() { return metatags_list(file, 'authors', this.authors_group) },
+	get tags_list() { return metatags_list(file, 'tags', this.tags_group) },
 
 	// posts & pages only
 	get tags_inline() { return metatags_inline(file, 'tags', this.tags) },
@@ -53,7 +53,7 @@ function convert(file, index, config, header, body, footer) {
     } catch (e) {
 	// authors/tags file
 	let type = path.dirname(file)
-	view.subject = authors_tags(view[type+'s'], path.basename(file))
+	view.subject = metatags(view[type+'s_group'], path.basename(file))
     }
     if (fm) view = Object.assign(view, fm, { body: mp.body() })
 
@@ -64,7 +64,7 @@ function convert(file, index, config, header, body, footer) {
     return [header, body, footer].join("\n")
 }
 
-function authors_tags(group, target) {
+function metatags(group, target) {
     for (let candidate of Object.keys(group)) {
 	if (target === lib.md5(candidate)) return candidate
     }
@@ -145,11 +145,11 @@ function contents(file, index) {
     }
 }
 
-function metatags_inline(file, type, list) {
+function metatags_inline(relativeto, type, list) {
     return list.map( val => {
 	return ejs.render('<a href="<%= link %>"><%= text %></a>', {
 	    text: val,
-	    link: metatags_link(file, type, val)
+	    link: metatags_link(relativeto, type, val)
 	})
     }).join(", ")
 }
@@ -163,4 +163,13 @@ function posts_sort_by_date(posts, ascending = false) {
     return posts.sort( (a, b) => {
 	return ascending ? birthtime(a.file) - birthtime(b.file) : birthtime(b.file) - birthtime(a.file)
     })
+}
+
+function metatags_list(relativeto, type, group) {
+    return '<ul>' + Object.keys(group).map( name => {
+	return ejs.render('<li><a href="<%= link %>"><%= name %></a> (<%= count %>)</li>', {
+	    link: metatags_link(relativeto, type, name),
+	    name,
+	    count: group[name].length})
+    }).join("\n") + '</ul>'
 }

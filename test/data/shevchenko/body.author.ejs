@@ -2,7 +2,7 @@
 
   <h2><%= subject %></h2>
 
-  <p>Total: <%= authors[subject].length %></p>
+  <p>Total: <%= authors_group[subject].length %></p>
 
   <table>
     <thead>
@@ -10,7 +10,7 @@
       <th>Subject</th>
       <th style="width: 30%">Tags</th></thead>
     <tbody>
-      <% for (let val of posts_sort_by_date(authors[subject])) { %>
+      <% for (let val of posts_sort_by_date(authors_group[subject])) { %>
       <tr>
 
 	<% if (is_post(val.file)) { %>

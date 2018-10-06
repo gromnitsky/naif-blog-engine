@@ -25,10 +25,10 @@ $(static.dest): $(out)/%: $(src)/%
 	$(mkdir)
 	$(copy)
 
-$(out)/authors_tags.mk: $(out)/index.json
-	$(mk)/nbe-authors_tags $< $(out) > $@
+$(out)/metatags.mk: $(out)/index.json
+	$(mk)/nbe-metatags $< $(out) > $@
 
-include $(out)/authors_tags.mk
+include $(out)/metatags.mk
 
 $(out)/a/%.html: $(out)/index.json $(src)/config.json $(src)/header.ejs $(src)/body.author.ejs $(src)/footer.ejs
 	$(mkdir)
