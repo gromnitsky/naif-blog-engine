@@ -13,12 +13,7 @@
 
   <%- body %>
 
-  <% if (tags.length) { %>
-  <br>Tags: <%- metatags_inline(file, 'tags', tags) %>
-  <% } %>
-
-  <% if (authors.length) { %>
-  <br>Authors: <%- metatags_inline(file, 'authors', authors) %>
-  <% } %>
+  <br>Tags: <%- tags_inline %>
+  <br>Authors: <%- authors_inline %>
 
 </article>

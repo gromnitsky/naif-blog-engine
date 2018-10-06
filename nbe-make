@@ -15,7 +15,7 @@ compile: $(html.dest) $(static.dest)
 
 $(out)/%.html: $(src)/%.md $(out)/index.json $(src)/config.json $(src)/header.ejs $(src)/body.ejs $(src)/footer.ejs
 	$(mkdir)
-	$(mk)/nbe-md2html $^ > $@
+	$(mk)/nbe-html $^ > $@
 
 $(out)/index.json: $(filter %.md, $(all.src))
 	$(mkdir)
@@ -32,11 +32,11 @@ include $(out)/authors_tags.mk
 
 $(out)/a/%.html: $(out)/index.json $(src)/config.json $(src)/header.ejs $(src)/body.author.ejs $(src)/footer.ejs
 	$(mkdir)
-	$(mk)/nbe-md2html author/$* $^ > $@
+	$(mk)/nbe-html author/$* $^ > $@
 
 $(out)/t/%.html: $(out)/index.json $(src)/config.json $(src)/header.ejs $(src)/body.tag.ejs $(src)/footer.ejs
 	$(mkdir)
-	$(mk)/nbe-md2html tag/$* $^ > $@
+	$(mk)/nbe-html tag/$* $^ > $@
 
 copy = cp $< $@
 mkdir = @mkdir -p $(dir $@)

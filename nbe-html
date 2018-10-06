@@ -29,7 +29,8 @@ function convert(file, index, config, header, body, footer) {
 	contents: contents(file, index),
 	authors: lib.index_group_by(index, 'authors'),
 	tags: lib.index_group_by(index, 'tags'),
-	metatags_inline,
+	get tags_inline() { return metatags_inline(file, 'tags', this.tags) },
+	get authors_inline() { return metatags_inline(file, 'authors', this.authors) }
     }
 
     let fm
