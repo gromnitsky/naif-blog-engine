@@ -21,7 +21,6 @@ process.stdout.write(convert(argv[0], index, config, header, body, footer))
 function convert(file, index, config, header, body, footer) {
     let view = {
 	// posts only
-	post_birthtime: birthtime(file),
 	prev: prev_or_next(file, index, cur => cur-1),
 	next: prev_or_next(file, index, cur => cur+1),
 
@@ -41,7 +40,7 @@ function convert(file, index, config, header, body, footer) {
 	// helpers
 	metatags_inline,
 	is_post: lib.is_post,
-	birthtime: birthtime,
+	birthtime_ymd: birthtime_ymd,
 	link,
 	posts_sort_by_date,
     }
@@ -64,11 +63,9 @@ function convert(file, index, config, header, body, footer) {
     return [header, body, footer].join("\n")
 }
 
-function metatags(group, target) {
-    for (let candidate of Object.keys(group)) {
-	if (target === lib.md5(candidate)) return candidate
-    }
-    throw new Error(`failed to find ${target}`)
+function birthtime_ymd(file) {
+    let d = birthtime(file)
+    return d && [d.getFullYear(), d.getMonth()+1, d.getDate()].join('-')
 }
 
 function birthtime(file) {
@@ -145,6 +142,13 @@ function contents(file, index) {
     }
 }
 
+function metatags(group, target) {
+    for (let candidate of Object.keys(group)) {
+	if (target === lib.md5(candidate)) return candidate
+    }
+    throw new Error(`failed to find ${target}`)
+}
+
 function metatags_inline(relativeto, type, list) {
     return list.map( val => {
 	return ejs.render('<a href="<%= link %>"><%= text %></a>', {
@@ -159,12 +163,6 @@ function metatags_link(relativeto, type, template) {
     return path.join(rootdir(relativeto), prefix, lib.md5(template) + '.html')
 }
 
-function posts_sort_by_date(posts, ascending = false) {
-    return posts.sort( (a, b) => {
-	return ascending ? birthtime(a.file) - birthtime(b.file) : birthtime(b.file) - birthtime(a.file)
-    })
-}
-
 function metatags_list(relativeto, type, group) {
     return '<ul>' + Object.keys(group).map( name => {
 	return ejs.render('<li><a href="<%= link %>"><%= name %></a> (<%= count %>)</li>', {
@@ -172,4 +170,10 @@ function metatags_list(relativeto, type, group) {
 	    name,
 	    count: group[name].length})
     }).join("\n") + '</ul>'
+}
+
+function posts_sort_by_date(posts, ascending = false) {
+    return posts.sort( (a, b) => {
+	return ascending ? birthtime(a.file) - birthtime(b.file) : birthtime(b.file) - birthtime(a.file)
+    })
 }
