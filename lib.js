@@ -47,7 +47,10 @@ exports.MarkdownParser = class {
 	return attrs
     }
 
-    body() { return marked(this.md.body) }
+    body(opt) {
+	this.parse()
+	return marked(this.md.body, opt)
+    }
 }
 
 exports.index_group_by = function(index, prop) {

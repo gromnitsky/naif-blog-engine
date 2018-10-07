@@ -1,0 +1,17 @@
+<% for (let post of posts_sort_by_date(index.posts.slice(-4))) { %>
+
+<article>
+  <h2><a href="<%= post.file.replace(/\.md$/, '.html') %>"><%= post.subject %></a></h2>
+  <p>
+    Air Date: <%= birthtime_ymd(post.file) %><br>
+    Latest update: <%= new Date(post.mtime).toLocaleString() %>
+  </p>
+
+  <%- body(post.file) %>
+
+  <br>Tags: <%- metatags_inline(root, 'tags', post.tags) %>
+  <br>Authors: <%- metatags_inline(root, 'authors', post.authors) %>
+
+</article>
+
+<% } %>

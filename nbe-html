@@ -25,6 +25,7 @@ function convert(file, index, config, header, body, footer) {
 	next: prev_or_next(file, index, cur => cur+1),
 
 	file,
+	index,
 	root: rootdir(file),
 	config,
 	contents: contents(file, index),
@@ -43,6 +44,7 @@ function convert(file, index, config, header, body, footer) {
 	birthtime_ymd: birthtime_ymd,
 	link,
 	posts_sort_by_date,
+	path,
     }
 
     let fm
@@ -50,9 +52,15 @@ function convert(file, index, config, header, body, footer) {
     try {
 	fm = mp.front_matter()
     } catch (e) {
-	// authors/tags file
-	let type = path.dirname(file)
-	view.subject = metatags(view[type+'s_group'], path.basename(file))
+	// meta pages that don't have an explicit .md file as the input
+	if (file === 'home') {
+	    view.root = ''
+	    view.subject = 'Home'
+	    view.body = file => new lib.MarkdownParser(file).body({baseUrl: file})
+	} else { // authors/tags file
+	    let type = path.dirname(file)
+	    view.subject = metatags(view[type+'s_group'], path.basename(file))
+	}
     }
     if (fm) view = Object.assign(view, fm, { body: mp.body() })
 
@@ -84,7 +92,10 @@ function prev_or_next(file, index, condition) {
     }
 }
 
-function rootdir(file) { return path.dirname(file).replace(/[^/]+/g, '..') }
+function rootdir(file) {
+    if (file === '') return ''
+    return path.dirname(file).replace(/[^/]+/g, '..')
+}
 
 function link(file, relativeto) {
     return path.join(rootdir(relativeto || file),

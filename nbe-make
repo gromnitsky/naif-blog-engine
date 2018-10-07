@@ -2,18 +2,20 @@
 
 src := .
 out := _out
+web := $(out)/web
 
 mk := $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
 all.src := $(filter-out $(src)/config.json  $(wildcard $(src)/*.ejs), \
 	$(shell find $(src) ! -path '$(src)/$(out)/*' -type f))
-all.dest := $(patsubst $(src)/%, $(out)/%, $(all.src))
+all.dest := $(patsubst $(src)/%, $(web)/%, $(all.src))
 html.dest := $(patsubst %.md, %.html, $(filter %.md, $(all.dest)))
 static.dest := $(filter-out %.md, $(all.dest))
 
 .PHONY: compile
-compile: $(html.dest) $(static.dest)
+compile:
+compile := $(html.dest) $(static.dest)
 
-$(out)/%.html: $(src)/%.md $(out)/index.json $(src)/config.json $(src)/header.ejs $(src)/body.ejs $(src)/footer.ejs
+$(web)/%.html: $(src)/%.md $(out)/index.json $(src)/config.json $(src)/header.ejs $(src)/body.ejs $(src)/footer.ejs
 	$(mkdir)
 	$(mk)/nbe-html $^ > $@
 
@@ -21,22 +23,30 @@ $(out)/index.json: $(filter %.md, $(all.src))
 	$(mkdir)
 	$(mk)/nbe-index $^ > $@
 
-$(static.dest): $(out)/%: $(src)/%
+$(static.dest): $(web)/%: $(src)/%
 	$(mkdir)
 	$(copy)
 
 $(out)/metatags.mk: $(out)/index.json
-	$(mk)/nbe-metatags $< $(out) > $@
+	$(mk)/nbe-metatags $< $(web) > $@
 
 include $(out)/metatags.mk
 
-$(out)/a/%.html: $(out)/index.json $(src)/config.json $(src)/header.ejs $(src)/body.author.ejs $(src)/footer.ejs
+$(web)/a/%.html: $(out)/index.json $(src)/config.json $(src)/header.ejs $(src)/body.author.ejs $(src)/footer.ejs
 	$(mkdir)
 	$(mk)/nbe-html author/$* $^ > $@
 
-$(out)/t/%.html: $(out)/index.json $(src)/config.json $(src)/header.ejs $(src)/body.tag.ejs $(src)/footer.ejs
+$(web)/t/%.html: $(out)/index.json $(src)/config.json $(src)/header.ejs $(src)/body.tag.ejs $(src)/footer.ejs
 	$(mkdir)
 	$(mk)/nbe-html tag/$* $^ > $@
+
+$(web)/index.html: $(out)/index.json $(src)/config.json $(src)/header.ejs $(src)/body.home.ejs $(src)/footer.ejs
+	$(mkdir)
+	$(mk)/nbe-html home $^ > $@
+
+compile += $(web)/index.html
+
+compile: $(compile)
 
 copy = cp $< $@
 mkdir = @mkdir -p $(dir $@)
