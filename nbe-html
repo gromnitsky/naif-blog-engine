@@ -28,7 +28,6 @@ function convert(file, index, config, header, body, footer) {
 	index,
 	root: rootdir(file),
 	config,
-	contents: contents(file, index),
 	authors_group: lib.index_group_by(index, 'authors'),
 	tags_group: lib.index_group_by(index, 'tags'),
 	get authors_list() { return metatags_list(file, 'authors', this.authors_group) },
@@ -57,12 +56,14 @@ function convert(file, index, config, header, body, footer) {
 	    view.root = ''
 	    view.subject = 'Home'
 	    view.body = file => new lib.MarkdownParser(file).body({baseUrl: file})
+	    view.contents = contents('', index)
 	} else { // authors/tags file
 	    let type = path.dirname(file)
 	    view.subject = metatags(view[type+'s_group'], path.basename(file))
 	}
     }
     if (fm) view = Object.assign(view, fm, { body: mp.body() })
+    if (!view.contents) view.contents = contents(file, index)
 
     header = ejs.render(header, view)
     body = ejs.render(body, view)
@@ -93,12 +94,13 @@ function prev_or_next(file, index, condition) {
 }
 
 function rootdir(file) {
-    if (file === '') return ''
+    let np = path.normalize(file)
+    if (/^\.\/*$/.test(np)) return np
     return path.dirname(file).replace(/[^/]+/g, '..')
 }
 
 function link(file, relativeto) {
-    return path.join(rootdir(relativeto || file),
+    return path.join(rootdir(relativeto == null ? file : relativeto),
 		     file.replace(/\.md$/, '.html'))
 }
 
