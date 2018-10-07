@@ -10,6 +10,18 @@ body {
   font-family: Georgia, serif;
 }
 
+a { text-decoration: none; }
+
+/* a diff font for headers */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: serif;
+}
+
 img,
 object,
 video,
@@ -32,13 +44,29 @@ pre {
 
 header {
   border-bottom: 1px dotted var(--body-fg);
+  display: flex;
+  justify-content: center;
 }
+
+header > h1 { margin: 0.2em; }
 
 footer {
   border-top: 1px dotted var(--body-fg);
   color: gray;
   font-size: smaller;
 }
+
+hr {
+  border: 0;
+  border-bottom: 1px dotted gray;
+}
+
+main > nav > img {
+  max-width: 95%;
+  margin: var(--gutter) 0;
+}
+
+/* the holy grail */
 
 main { display: flex; }
 
@@ -75,4 +103,6 @@ main > nav {
     border-top: 1px dotted var(--body-fg);
     border-right: 0;
   }
+
+  main > nav > img { display: none; }
 }
