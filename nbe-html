@@ -30,8 +30,6 @@ function convert(file, index, config, header, body, footer) {
 	config,
 	authors_group: lib.index_group_by(index, 'authors'),
 	tags_group: lib.index_group_by(index, 'tags'),
-	get authors_list() { return metatags_list(file, 'authors', this.authors_group) },
-	get tags_list() { return metatags_list(file, 'tags', this.tags_group) },
 
 	// posts & pages only
 	get tags_inline() { return metatags_inline(file, 'tags', this.tags) },
@@ -46,6 +44,7 @@ function convert(file, index, config, header, body, footer) {
 	path,
     }
 
+    let relativeto = file
     let fm
     let mp = new lib.MarkdownParser(file)
     try {
@@ -56,14 +55,17 @@ function convert(file, index, config, header, body, footer) {
 	    view.root = ''
 	    view.subject = 'Home'
 	    view.body = file => new lib.MarkdownParser(file).body({baseUrl: file})
-	    view.contents = contents('', index)
+	    relativeto = view.root
 	} else { // authors/tags file
 	    let type = path.dirname(file)
 	    view.subject = metatags(view[type+'s_group'], path.basename(file))
 	}
     }
     if (fm) view = Object.assign(view, fm, { body: mp.body() })
-    if (!view.contents) view.contents = contents(file, index)
+
+    view.contents = contents(relativeto, index)
+    view.authors_list = metatags_list(relativeto, 'authors', view.authors_group)
+    view.tags_list = metatags_list(relativeto, 'tags', view.tags_group)
 
     header = ejs.render(header, view)
     body = ejs.render(body, view)
