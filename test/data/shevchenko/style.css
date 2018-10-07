@@ -1,12 +1,21 @@
-body {
-  max-width: 700px;
-  margin: 0 auto;
-  color: #191919;
+:root {
+  --body-fg: #191919;
+  --gutter: 10px;
 }
 
-img {
-  max-width: 100%;
+body {
+  max-width: 950px;
+  margin: 0 auto;
+  color: var(--body-fg);
+  font-family: Georgia, serif;
+}
+
+img,
+object,
+video,
+embed {
   width: auto;
+  max-width: 100%;
   height: auto;
 }
 
@@ -19,4 +28,51 @@ code,
 pre {
   background-color: #fafafa;
   white-space: pre-wrap;
+}
+
+header {
+  border-bottom: 1px dotted var(--body-fg);
+}
+
+footer {
+  border-top: 1px dotted var(--body-fg);
+  color: gray;
+  font-size: smaller;
+}
+
+main { display: flex; }
+
+main > section {
+  order: 2;
+  min-width: 600px;
+  flex: 1;
+  margin-bottom: var(--gutter);
+}
+
+main > nav {
+  order: 1;
+  width: 240px;
+  margin-right: var(--gutter);
+  border-right: 1px dotted var(--body-fg);
+}
+
+@media (max-width: 949px) {
+  /* too narrow to support 2 columns */
+  body {
+    max-width: 700px;
+  }
+
+  main { flex-flow: column; }
+
+  main > section,
+  main > nav {
+    order: 0;
+    width: auto;
+  }
+
+  main > nav {
+    margin-top: var(--gutter);
+    border-top: 1px dotted var(--body-fg);
+    border-right: 0;
+  }
 }

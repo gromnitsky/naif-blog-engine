@@ -1,20 +1,28 @@
-<footer>
-
   <style>
     /* 'contents' widget */
     summary:only-child::-webkit-details-marker { display: none; }
     details details { margin-left:1em; }
   </style>
 
-  <br>
-  <%- contents.pages %>
-  <br>
-  <%- contents.posts %>
+  <nav>
+    <br>
+    <%- contents.pages %>
+    <br>
+    <%- contents.posts %>
 
-  <p>Authors:</p>
-  <%- authors_list %>
+    <p>Authors:</p>
+    <%- authors_list %>
 
-  <p>Tags:</p>
-  <%- tags_list %>
+    <p>Tags:</p>
+    <%- tags_list %>
+  </nav>
 
+</main>
+
+<footer>
+  <!-- a deep quote -->
+  <p>
+    This is no time to bite the bullet with our synchronised incremental
+    paradigm shifts.
+  </p>
 </footer>
