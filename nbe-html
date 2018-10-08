@@ -152,7 +152,7 @@ function contents(file, index) {
     }
 
     return {
-	posts: tree(tnode(index.posts, node_path_posts), file),
+	posts: tree(tnode(posts_sort_by_date(index.posts), node_path_posts), file),
 	pages: tree(tnode(index.pages, node_path_pages), file),
     }
 }
@@ -187,8 +187,9 @@ function metatags_list(relativeto, type, group) {
     }).join("\n") + '</ul>'
 }
 
+// NOT in-place
 function posts_sort_by_date(posts, ascending = false) {
-    return posts.sort( (a, b) => {
+    return posts.slice().sort( (a, b) => {
 	return ascending ? birthtime(a.file) - birthtime(b.file) : birthtime(b.file) - birthtime(a.file)
     })
 }
