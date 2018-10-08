@@ -1,6 +1,8 @@
 <section>
-<% let list = posts_sort_by_date(index.posts.slice(-4));
-   list.forEach( (post, idx) => { %>
+<% const SLICE = 4
+   let list = posts_sort_by_date(index.posts.slice(-1-SLICE));
+   let posts = list.slice(0,-1);
+   posts.forEach( (post, idx) => { %>
 
 <article>
   <h2><a href="<%= post.file.replace(/\.md$/, '.html') %>"><%= post.subject %></a></h2>
@@ -14,9 +16,17 @@
   <br>Tags: <%- metatags_inline(root, 'tags', post.tags) %>
   <br>Authors: <%- metatags_inline(root, 'authors', post.authors) %>
 
-  <% if (idx !== list.length-1) { %><hr><% } %>
+  <% if (idx !== posts.length-1) { %><hr><% } %>
 
 </article>
 
 <% }) %>
+
+<% if (index.posts.length > SLICE) {
+       let post = list.slice(-1)[0] %>
+  <nav class="screen prevnext">
+    <a style="margin-top: 1em" href="<%= link(post.file, root) %>" title="<%= post.subject %>">&laquo;</a>
+  </nav>
+<% } %>
+
 </section>
