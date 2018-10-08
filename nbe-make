@@ -46,6 +46,12 @@ $(web)/index.html: $(out)/index.json $(src)/config.json $(src)/header.ejs $(src)
 
 compile += $(web)/index.html
 
+$(web)/rss.xml: $(out)/index.json $(src)/config.json
+	$(mkdir)
+	$(mk)/nbe-rss $^ > $@
+
+compile += $(web)/rss.xml
+
 compile: $(compile)
 
 copy = cp $< $@

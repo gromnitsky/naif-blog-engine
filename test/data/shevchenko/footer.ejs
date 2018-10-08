@@ -1,7 +1,12 @@
   <nav>
     <img src='<%= path.join(root, 'avatar.jpg') %>' alt='avatar'>
 
-    <br>
+    <p>
+      <a href="<%= path.join(root, 'rss.xml') %>"><img src='<%= path.join(root, 'rss.svg') %>' style="height: 1em">
+	Subscribe
+      </a>
+    </p>
+
     <%- contents.pages %>
     <br>
     <%- contents.posts %>
