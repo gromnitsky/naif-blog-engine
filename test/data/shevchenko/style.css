@@ -42,15 +42,15 @@ pre {
   white-space: pre-wrap;
 }
 
-header {
+body > header {
   border-bottom: 1px dotted var(--body-fg);
   display: flex;
   justify-content: center;
 }
 
-header > h1 { margin: 0.2em; }
+body > header > h1 { margin: 0.2em; }
 
-footer {
+body > footer {
   border-top: 1px dotted var(--body-fg);
   color: gray;
   font-size: smaller;
@@ -61,23 +61,24 @@ hr {
   border-bottom: 1px dotted gray;
 }
 
-main > nav > img {
+body > main > nav > img {
+  border-radius: 6px;
   max-width: 95%;
   margin: var(--gutter) 0;
 }
 
 /* the holy grail */
 
-main { display: flex; }
+body > main { display: flex; }
 
-main > section {
+body > main > section {
   order: 2;
   min-width: 600px;
   flex: 1;
   margin-bottom: var(--gutter);
 }
 
-main > nav {
+body > main > nav {
   order: 1;
   width: 240px;
   margin-right: var(--gutter);
@@ -90,19 +91,19 @@ main > nav {
     max-width: 700px;
   }
 
-  main { flex-flow: column; }
+  body > main { flex-flow: column; }
 
-  main > section,
-  main > nav {
+  body > main > section,
+  body > main > nav {
     order: 0;
     width: auto;
   }
 
-  main > nav {
+  body > main > nav {
     margin-top: var(--gutter);
     border-top: 1px dotted var(--body-fg);
     border-right: 0;
   }
 
-  main > nav > img { display: none; }
+  body > main > nav > img { display: none; }
 }
