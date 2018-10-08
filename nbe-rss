@@ -1,0 +1,59 @@
+#!/usr/bin/env node
+
+let fs = require('fs')
+let path = require('path')
+let ejs = require('ejs')
+let lib = require('./lib')
+
+let argv = process.argv.slice(2)
+if (argv.length !== 2) {
+    console.error('Usage:', path.basename(process.argv[1]), 'index.json config.json')
+    process.exit(1)
+}
+
+let view = {
+    index: json(argv[0]),
+    config: json(argv[1]),
+    get baseUrl() { return this.config.rss.baseUrl + '/rss.xml' },
+    get posts() { return this.index.posts.slice(-8).reverse() },
+    get updated() { return new Date(this.posts[0].mtime).toISOString() },
+    body: function(file) {
+	let baseUrl = this.config.rss.baseUrl + '/' + path.dirname(file)
+	return new lib.MarkdownParser(file).body({baseUrl})
+    }
+}
+
+if (!(view.config.rss && view.config.rss.baseUrl)) {
+    console.error(`no rss.baseUrl prop in ${argv[1]}`)
+    process.exit(1)
+}
+
+process.stdout.write(ejs.render(`<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+
+<title><%= config.title %></title>
+<link href="<%= baseUrl %>"/>
+<updated><%= updated %></updated>
+<id><%= baseUrl %></id>
+
+<% for (let post of posts) {
+     let permalink = config.rss.baseUrl + '/' + post.file.replace(/\\.md$/, '.html') %>
+<entry>
+  <title><%= post.subject %></title>
+  <link href="<%= permalink %>" />
+  <id><%= permalink %></id>
+  <updated><%= new Date(post.mtime).toISOString() %></updated>
+  <% for (let author of post.authors) { %>
+    <author><name><%= author %></name></author>
+  <% } %>
+  <% for (let tag of post.tags) { %>
+    <category term="<%= tag %>" />
+  <% } %>
+  <content type="html"><%= body(post.file) %></content>
+</entry>
+<% } %>
+
+</feed>`, view))
+
+
+function json(file) { return JSON.parse(fs.readFileSync(file).toString()) }
