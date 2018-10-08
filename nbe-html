@@ -138,7 +138,7 @@ function contents(file, index) {
 	    r.push(`<details ${kid.selected ? 'open' : ''}>`)
 	    if (!kid.kids.length) {
 		if (kid.selected)
-		    r.push(ejs.render('<summary class="selected"><%= subject %></summary>', {subject: kid.payload.subject}))
+		    r.push(ejs.render('<summary class="selected"><b><%= subject %></b></summary>', {subject: kid.payload.subject}))
 		else
 		    r.push(ejs.render('<summary><a href="<%= link %>"><%= subject %></a></summary>', {link: link(kid.payload.file, file), subject: kid.payload.subject}))
 	    } else {

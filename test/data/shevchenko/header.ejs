@@ -9,7 +9,12 @@
 <style>
   /* 'contents' widget */
   summary:only-child::-webkit-details-marker { display: none; }
-  details details { margin-left:1em; }
+  summary:only-child { list-style-type: none; }
+  summary:only-child::before {
+    content: "\2022"; /* circle */
+    margin-right: 0.5em;
+  }
+  details details { margin-left: 1em; }
 </style>
 <link rel="stylesheet" href="<%= path.join(root, 'style.css') %>">
 
