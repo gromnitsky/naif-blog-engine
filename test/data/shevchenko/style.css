@@ -107,3 +107,10 @@ body > main > nav {
 
   body > main > nav > img { display: none; }
 }
+
+@media print {
+  body > main > section > article > nav.screen,
+  body > main > nav,
+  body > header,
+  body > footer { display: none; }
+}
