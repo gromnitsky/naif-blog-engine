@@ -5,7 +5,8 @@ out := _out
 web := $(out)/web
 
 mk := $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
-all.src := $(filter-out $(src)/config.json  $(wildcard $(src)/*.ejs), \
+all.src := $(filter-out $(src)/config.json $(wildcard $(src)/*.mk) \
+	$(wildcard $(src)/*.ejs), \
 	$(shell find $(src) ! -path '$(src)/$(out)/*' -type f))
 all.dest := $(patsubst $(src)/%, $(web)/%, $(all.src))
 html.dest := $(patsubst %.md, %.html, $(filter %.md, $(all.dest)))
@@ -56,5 +57,43 @@ compile: $(compile)
 
 copy = cp $< $@
 mkdir = @mkdir -p $(dir $@)
+shellquote = '$(subst ','\'',$(1))'
+#'
 
 .DELETE_ON_ERROR:
+
+
+
+# print a diff between should-be files & a real situation
+.PHONY: check
+check: compile
+	@echo "$(strip $(compile))" | tr ' ' \\n | sort > should
+	@find $(web) -type f | sort > real
+	@diff -u should real; c=$$?; rm should real; exit $$c
+
+new.date := $(shell date +%Y/%m/%d)
+new.post := $(src)/$(shell mktemp -u $(new.date)/XXXXXX.md)
+new.author := $(shell json < $(src)/config.json rss.author)
+.PHONY: new
+new:
+	@mkdir -p $(dir $(new.post))
+	@printf -- '---\nsubject: A New Post\nauthors: %s\ntags: \n---\n\nHi' \
+		$(call shellquote,$(new.author)) > $(new.post)
+	@echo TEST: nbe-make $(patsubst %.md, %.html, $(patsubst $(src)/%, $(web)/%, $(new.post)))
+	$$EDITOR $(new.post) &
+
+define help :=
+if the build fails, rm $(out)/index.json, then try again
+
+compile		(default)
+new		create a new blog post
+check		check for superfluous files in $(web)
+
+$(web)/yyyy/mm/dd/post.html	compile only 1 particular post
+-f ~/lib/debug.mk pp-compile	print all file targets
+endef
+
+.PHONY: help
+help:; $(info $(help))@:
+
+-include $(src)/local.mk

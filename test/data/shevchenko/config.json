@@ -1,6 +1,7 @@
 {
     "title": "Щоденник Тараса Шевченко",
     "rss": {
-        "baseUrl": "http://example.com/blog/"
+        "baseUrl": "http://example.com/blog/",
+        "author": "Тарас Шевченко"
     }
 }
