@@ -18,7 +18,7 @@ let view = {
     get posts() { return this.index.posts.slice(0,8) },
     get updated() { return new Date(this.posts[0].mtime).toISOString() },
     body: function(file) {
-	let baseUrl = this.config.rss.baseUrl + '/' + path.dirname(file)
+	let baseUrl = this.config.rss.baseUrl + '/' + file
 	return new lib.MarkdownParser(file).body({baseUrl})
     }
 }
