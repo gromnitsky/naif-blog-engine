@@ -87,7 +87,6 @@ body > main { display: flex; }
 
 body > main > section {
   order: 2;
-  min-width: 600px;
   flex: 1;
   margin-bottom: var(--gutter);
 }
