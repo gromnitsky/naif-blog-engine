@@ -40,7 +40,6 @@ function convert(file, index, config, header, body, footer) {
 	is_post: lib.is_post,
 	birthtime_ymd: birthtime_ymd,
 	link,
-	posts_sort_by_date,
 	path,
     }
 
@@ -152,7 +151,7 @@ function contents(file, index) {
     }
 
     return {
-	posts: tree(tnode(posts_sort_by_date(index.posts), node_path_posts), file),
+	posts: tree(tnode(index.posts, node_path_posts), file),
 	pages: tree(tnode(index.pages, node_path_pages), file),
     }
 }
@@ -185,11 +184,4 @@ function metatags_list(relativeto, type, group) {
 	    name,
 	    count: group[name].length})
     }).join("\n") + '</ul>'
-}
-
-// NOT in-place
-function posts_sort_by_date(posts, ascending = false) {
-    return posts.slice().sort( (a, b) => {
-	return ascending ? birthtime(a.file) - birthtime(b.file) : birthtime(b.file) - birthtime(a.file)
-    })
 }

@@ -11,7 +11,7 @@
       <th>Subject</th>
       <th style="width: 30%">Authors</th></thead>
     <tbody>
-      <% for (let val of posts_sort_by_date(tags_group[subject])) { %>
+      <% for (let val of tags_group[subject]) { %>
       <tr>
 	<td><%= birthtime_ymd(val.file) %></td>
 	<td><a href="<%= link(val.file, file) %>"><%= val.subject %></a></td>

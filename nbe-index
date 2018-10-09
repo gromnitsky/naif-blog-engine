@@ -8,7 +8,7 @@ let fposts = files.filter(lib.is_post).filter(is_md)
 let fpages = files.filter( v => !lib.is_post(v)).filter(is_md)
 
 process.stdout.write(JSON.stringify({
-    posts: sort_by_file_name(fposts.map(post)),
+    posts: rev_sort_by_file_name(fposts.map(post)),
     pages: fpages.map(page)
 }))
 
@@ -29,8 +29,8 @@ function parse(file, required_attrs) {
     return Object.assign({file}, mp.front_matter(required_attrs))
 }
 
-function sort_by_file_name(list) {
-    return list.sort( (a, b) => {
-	return a.file.localeCompare(b.file)
+function rev_sort_by_file_name(arr) {
+    return arr.sort( (a, b) => {
+	return b.file.localeCompare(a.file)
     })
 }

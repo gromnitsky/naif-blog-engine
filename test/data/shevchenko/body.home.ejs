@@ -1,7 +1,6 @@
 <section>
-<% const SLICE = 4
-   let list = posts_sort_by_date(index.posts.slice(-1-SLICE));
-   let posts = list.slice(0,-1);
+<% const SLICE = 4;
+   let posts = index.posts.slice(0, SLICE);
    posts.forEach( (post, idx) => { %>
 
 <article>
@@ -22,8 +21,7 @@
 
 <% }) %>
 
-<% if (index.posts.length > SLICE) {
-       let post = list.slice(-1)[0] %>
+<% let post = index.posts[SLICE]; if (post) { %>
   <nav class="screen prevnext">
     <a style="margin-top: 1em" href="<%= link(post.file, root) %>" title="<%= post.subject %>">&laquo;</a>
   </nav>

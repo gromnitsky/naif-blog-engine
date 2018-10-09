@@ -11,7 +11,7 @@
       <th>Subject</th>
       <th style="width: 30%">Tags</th></thead>
     <tbody>
-      <% for (let val of posts_sort_by_date(authors_group[subject])) { %>
+      <% for (let val of authors_group[subject]) { %>
       <tr>
 
 	<td><%= birthtime_ymd(val.file) %></td>
