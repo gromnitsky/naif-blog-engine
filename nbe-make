@@ -6,8 +6,8 @@ web := $(out)/web
 
 mk := $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
 all.src := $(filter-out $(src)/config.json $(wildcard $(src)/*.mk) \
-	$(wildcard $(src)/*.ejs), \
-	$(shell find $(src) ! -path '$(src)/$(out)/*' -type f))
+	$(wildcard $(src)/*.ejs) $(src)/.gitignore, \
+	$(shell find $(src) ! -path "*/.git/*" ! -path '$(src)/$(out)/*' -type f))
 all.dest := $(patsubst $(src)/%, $(web)/%, $(all.src))
 html.dest := $(patsubst %.md, %.html, $(filter %.md, $(all.dest)))
 static.dest := $(filter-out %.md, $(all.dest))
