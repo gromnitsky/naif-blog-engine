@@ -11,7 +11,10 @@ let view = {
     config: lib.json(argv[1]),
     get baseUrl() { return this.config.rss.baseUrl + '/rss.xml' },
     get posts() { return this.index.posts.slice(0,8) },
-    get updated() { return new Date(this.posts[0].mtime).toISOString() },
+    get updated() {
+	let d = this.posts[0] ? this.posts[0].mtime : new Date(0)
+	return new Date(d).toISOString()
+    },
     body: function(file) {
 	let baseUrl = this.config.rss.baseUrl + '/' + file
 	return new lib.MarkdownParser(file).body({baseUrl})
