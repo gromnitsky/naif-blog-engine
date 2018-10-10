@@ -1,7 +1,14 @@
+let path = require('path')
 let crypto = require('crypto')
 let fs = require('fs')
 let front_matter = require('front-matter')
 let marked = require('marked')
+
+exports.prog = path.basename(process.argv[1])
+exports.errx = function(code, ...args) {
+    console.error(`${exports.prog} error:`, ...args)
+    process.exit(code)
+}
 
 exports.mtime = function(file) { return fs.statSync(file).mtime.getTime() }
 exports.is_post = function(file) { return /^\d{4}\/\d{2}\/\d{2}\b/.test(file) }
