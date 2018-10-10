@@ -27,10 +27,12 @@ function convert(file, index, config, header, body, footer) {
 	group_by_author: lib.index_group_by(index, 'authors'),
 	group_by_tag: lib.index_group_by(index, 'tags'),
 
-	// helpers
+	// complex widgets
 	metatags_inline,
+
+	// helpers
 	is_post: lib.is_post,
-	birthtime_ymd: birthtime_ymd, // useful for posts only
+	birthtime_ymd,
 	link,
 	path,
     }

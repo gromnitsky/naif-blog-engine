@@ -4,7 +4,7 @@
    posts.forEach( (post, idx) => { %>
 
 <article>
-  <h2><a href="<%= post.file.replace(/\.md$/, '.html') %>"><%= post.subject %></a></h2>
+  <h2><a href="<%= link(post.file, root) %>"><%= post.subject %></a></h2>
   <p>
     Air Date: <%= birthtime_ymd(post.file) %><br>
     Latest update: <%= new Date(post.mtime).toLocaleString() %>
