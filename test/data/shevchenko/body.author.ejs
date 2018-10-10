@@ -3,7 +3,7 @@
 
   <h2><%= subject %></h2>
 
-  <p>Total: <%= authors_group[subject].length %></p>
+  <p>Total: <%= group_by_author[subject].length %></p>
 
   <table>
     <thead>
@@ -11,7 +11,7 @@
       <th>Subject</th>
       <th style="width: 30%">Tags</th></thead>
     <tbody>
-      <% for (let val of authors_group[subject]) { %>
+      <% for (let val of group_by_author[subject]) { %>
       <tr>
 
 	<td><%= birthtime_ymd(val.file) %></td>
