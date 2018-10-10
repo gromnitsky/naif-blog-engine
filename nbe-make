@@ -28,10 +28,10 @@ $(static.dest): $(web)/%: $(src)/%
 	$(mkdir)
 	$(copy)
 
-$(out)/metatags.mk: $(out)/index.json
-	$(mk)/nbe-metatags $< $(web) > $@
+$(out)/metatargets.mk: $(out)/index.json
+	$(mk)/nbe-make-metatargets $< $(web) > $@
 
-include $(out)/metatags.mk
+include $(out)/metatargets.mk
 
 $(web)/a/%.html: $(out)/index.json $(src)/config.json $(src)/header.ejs $(src)/body.author.ejs $(src)/footer.ejs
 	$(mkdir)

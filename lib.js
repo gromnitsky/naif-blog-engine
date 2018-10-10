@@ -5,6 +5,7 @@ let marked = require('marked')
 
 exports.mtime = function(file) { return fs.statSync(file).mtime.getTime() }
 exports.is_post = function(file) { return /^\d{4}\/\d{2}\/\d{2}\b/.test(file) }
+exports.json = function(f) { return JSON.parse(fs.readFileSync(f).toString()) }
 
 exports.is_str_empty = function(s) {
     return !exports.is_str(s) || s.trim().length === 0

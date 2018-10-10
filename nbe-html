@@ -11,8 +11,7 @@ if (argv.length !== 6) {
     process.exit(1)
 }
 
-let [index, config] = argv.slice(1,3)
-    .map( v => JSON.parse(fs.readFileSync(v).toString()))
+let [index, config] = argv.slice(1,3).map(lib.json)
 let [header, body, footer] = argv.slice(3,6)
     .map( v => fs.readFileSync(v).toString())
 process.stdout.write(convert(argv[0], index, config, header, body, footer))
@@ -30,10 +29,6 @@ function convert(file, index, config, header, body, footer) {
 	config,
 	authors_group: lib.index_group_by(index, 'authors'),
 	tags_group: lib.index_group_by(index, 'tags'),
-
-	// posts & pages only
-	get tags_inline() { return metatags_inline(file, 'tags', this.tags) },
-	get authors_inline() { return metatags_inline(file, 'authors', this.authors) },
 
 	// helpers
 	metatags_inline,

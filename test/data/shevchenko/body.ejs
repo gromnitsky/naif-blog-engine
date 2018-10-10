@@ -14,8 +14,8 @@
 
   <%- body %>
 
-  <br>Tags: <%- tags_inline %>
-  <br>Authors: <%- authors_inline %>
+  <br>Tags: <%- metatags_inline(file, 'tags', tags) %>
+  <br>Authors: <%- metatags_inline(file, 'authors', authors) %>
 
 </article>
 </section>

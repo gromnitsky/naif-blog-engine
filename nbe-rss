@@ -12,8 +12,8 @@ if (argv.length !== 2) {
 }
 
 let view = {
-    index: json(argv[0]),
-    config: json(argv[1]),
+    index: lib.json(argv[0]),
+    config: lib.json(argv[1]),
     get baseUrl() { return this.config.rss.baseUrl + '/rss.xml' },
     get posts() { return this.index.posts.slice(0,8) },
     get updated() { return new Date(this.posts[0].mtime).toISOString() },
@@ -54,6 +54,3 @@ process.stdout.write(ejs.render(`<?xml version="1.0" encoding="utf-8"?>
 <% } %>
 
 </feed>`, view))
-
-
-function json(file) { return JSON.parse(fs.readFileSync(file).toString()) }
