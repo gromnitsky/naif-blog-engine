@@ -4,10 +4,15 @@ src := .
 out := _out
 web := $(out)/web
 
+req := $(addprefix $(src)/,body.author.ejs body.ejs body.home.ejs body.tag.ejs config.json footer.ejs header.ejs)
+ifneq ($(wildcard $(req)), $(req))
+$(error The curren dir ($(CURDIR)) does not look like a naif-blog-engine material. Run nbe-make-new-blog to create one)
+endif
+
 mk := $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
-all.src := $(filter-out $(src)/config.json $(wildcard $(src)/*.mk) \
-	$(wildcard $(src)/*.ejs) $(src)/.gitignore, \
-	$(shell find $(src) ! -path "*/.git/*" ! -path '$(src)/$(out)/*' -type f))
+all.src := $(filter-out $(wildcard $(src)/*.mk) $(req) \
+  $(src)/.gitignore $(src)/node_modules, \
+  $(shell find $(src) ! -path "*/.git/*" ! -path '$(src)/$(out)/*' -type f))
 all.dest := $(patsubst $(src)/%, $(web)/%, $(all.src))
 html.dest := $(patsubst %.md, %.html, $(filter %.md, $(all.dest)))
 static.dest := $(filter-out %.md, $(all.dest))
