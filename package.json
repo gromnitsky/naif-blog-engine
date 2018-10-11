@@ -1,5 +1,6 @@
 {
     "dependencies": {
+        "blueimp-md5": "^2.10.0",
         "ejs": "^2.6.1",
         "front-matter": "^2.3.0",
         "marked": "^0.5.1"

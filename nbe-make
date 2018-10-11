@@ -21,11 +21,11 @@ static.dest := $(filter-out %.md, $(all.dest))
 compile:
 compile := $(html.dest) $(static.dest)
 
-$(web)/%.html: $(src)/%.md $(out)/index.json $(src)/config.json $(src)/header.ejs $(src)/body.ejs $(src)/footer.ejs
+$(web)/%.html: $(src)/%.md $(web)/index.json $(src)/config.json $(src)/header.ejs $(src)/body.ejs $(src)/footer.ejs
 	$(mkdir)
 	$(mk)/nbe-html $^ > $@
 
-$(out)/index.json: $(filter %.md, $(all.src))
+$(web)/index.json: $(filter %.md, $(all.src))
 	$(mkdir)
 	$(mk)/nbe-index $^ > $@
 
@@ -33,30 +33,37 @@ $(static.dest): $(web)/%: $(src)/%
 	$(mkdir)
 	$(copy)
 
-$(out)/metatargets.mk: $(out)/index.json
+$(out)/metatargets.mk: $(web)/index.json
 	$(mk)/nbe-make-metatargets $< $(web) > $@
 
 include $(out)/metatargets.mk
 
-$(web)/a/%.html: $(out)/index.json $(src)/config.json $(src)/header.ejs $(src)/body.author.ejs $(src)/footer.ejs
+$(web)/a/%.html: $(web)/index.json $(src)/config.json $(src)/header.ejs $(src)/body.author.ejs $(src)/footer.ejs
 	$(mkdir)
 	$(mk)/nbe-html author/$* $^ > $@
 
-$(web)/t/%.html: $(out)/index.json $(src)/config.json $(src)/header.ejs $(src)/body.tag.ejs $(src)/footer.ejs
+$(web)/t/%.html: $(web)/index.json $(src)/config.json $(src)/header.ejs $(src)/body.tag.ejs $(src)/footer.ejs
 	$(mkdir)
 	$(mk)/nbe-html tag/$* $^ > $@
 
-$(web)/index.html: $(out)/index.json $(src)/config.json $(src)/header.ejs $(src)/body.home.ejs $(src)/footer.ejs
+$(web)/index.html: $(web)/index.json $(src)/config.json $(src)/header.ejs $(src)/body.home.ejs $(src)/footer.ejs
 	$(mkdir)
 	$(mk)/nbe-html home $^ > $@
 
 compile += $(web)/index.html
 
-$(web)/rss.xml: $(out)/index.json $(src)/config.json
+$(web)/rss.xml: $(web)/index.json $(src)/config.json
 	$(mkdir)
 	$(mk)/nbe-rss $^ > $@
 
 compile += $(web)/rss.xml
+
+# also makes $@.map source-map file
+$(web)/nav.js: $(mk)/nav.js $(web)/index.json
+	$(mkdir)
+	browserify -d $< | terser -m --source-map content=inline,url=$(notdir $@).map -o $@
+
+compile += $(web)/nav.js
 
 compile: $(compile)
 
@@ -88,7 +95,7 @@ new:
 	$$EDITOR $(new.post) &
 
 define help :=
-if the build fails, rm $(out)/index.json, then try again
+if the build fails, rm $(web)/index.json, then try again
 
 compile		(default)
 new		create a new blog post
