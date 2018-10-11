@@ -3,6 +3,7 @@
 let fs = require('fs')
 let path = require('path')
 let ejs = require('ejs')
+let md5 = require('blueimp-md5')
 let lib = require('./lib')
 let common = require('./lib.common')
 
@@ -29,7 +30,7 @@ function convert(file, index, config, header, body, footer) {
 	group_by_tag: common.index_group_by(index, 'tags'),
 
 	// complex widgets
-	metatags_inline,
+	metatags_inline: lib.metatags_inline,
 
 	// helpers
 	is_post: common.is_post,
@@ -74,21 +75,7 @@ function detect_input_type(file) {
 
 function metatags(group, target) {
     for (let candidate of Object.keys(group)) {
-	if (target === lib.md5(candidate)) return candidate
+	if (target === md5(candidate)) return candidate
     }
     throw new Error(`failed to find ${target}`)
-}
-
-function metatags_inline(relto, type, list) {
-    return list.map( val => {
-	return ejs.render('<a href="<%= link %>"><%= text %></a>', {
-	    text: val,
-	    link: metatags_link(relto, type, val)
-	})
-    }).join(", ")
-}
-
-function metatags_link(relto, type, template) {
-    let prefix = { tags: 't', authors: 'a' }[type]
-    return path.join(common.rootdir(relto), prefix, lib.md5(template) + '.html')
 }

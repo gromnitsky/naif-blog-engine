@@ -1,6 +1,7 @@
 // common staff for node & browser
 
 let path = require('path')
+let md5 = require('blueimp-md5') // for nodejs imp is too big
 
 exports.is_post = function(file) { return /^\d{4}\/\d{2}\/\d{2}\b/.test(file) }
 
@@ -34,4 +35,9 @@ exports.birthtime_ymd = function(file) {
 function birthtime(file) {
     if (!exports.is_post(file)) return
     return new Date(file.split(path.sep).slice(0,3).join('-') + 'T00:00:00')
+}
+
+exports.metatags_link = function(relto, type, template) {
+    let prefix = { tags: 't', authors: 'a' }[type]
+    return path.join(exports.rootdir(relto), prefix, md5(template) + '.html')
 }

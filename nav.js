@@ -2,7 +2,6 @@
 
 let path = require('path')
 let common = require('./lib.common')
-let md5 = require('blueimp-md5') // for nodejs imp is too big
 
 document.addEventListener('DOMContentLoaded', function() {
     getindex().then(widgets).then(mount)
@@ -34,7 +33,6 @@ async function widgets(index) {
 }
 
 function mount(widgets) {
-    console.log('mount', widgets)
     let widget_mount = w => {
 	let node = document.querySelector(w.id);
 	node && w.m ? node.innerHTML = w.m : console.log(`'${w.id}' isn't used`)
@@ -244,14 +242,9 @@ function contents(file, index) {
     }
 }
 
-function metatags_link(relto, type, template) {
-    let prefix = { tags: 't', authors: 'a' }[type]
-    return path.join(common.rootdir(relto), prefix, md5(template) + '.html')
-}
-
 function metatags_list(relto, type, group) {
     return '<ul>' + Object.keys(group).map( name => {
-	return `<li><a href="${metatags_link(relto, type, name)}">${name}</a> (${group[name].length})</li>`
+	return `<li><a href="${common.metatags_link(relto, type, name)}">${name}</a> (${group[name].length})</li>`
     }).join("\n") + '</ul>'
 }
 

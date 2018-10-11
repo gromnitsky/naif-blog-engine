@@ -3,6 +3,7 @@
 let path = require('path')
 let lib = require('./lib')
 let common = require('./lib.common')
+let md5 = require('blueimp-md5')
 
 if (process.argv.length !== 2+2)
     lib.errx(1, 'Usage:', lib.prog, 'index.json output-dir')
@@ -10,8 +11,6 @@ if (process.argv.length !== 2+2)
 let index = lib.json(process.argv[2])
 let out = process.argv[3]
 console.log(Object.keys(common.index_group_by(index, 'authors'))
-	    .map( v => 'compile += ' + path.join(out, 'a', `${lib.md5(v)}.html`))
-	    .join("\n"))
+	    .map( v => 'compile += ' + path.join(out, 'a', `${md5(v)}.html`)).join("\n"))
 console.log(Object.keys(common.index_group_by(index, 'tags'))
-	    .map( v => 'compile += ' + path.join(out, 't', `${lib.md5(v)}.html`))
-	    .join("\n"))
+	    .map( v => 'compile += ' + path.join(out, 't', `${md5(v)}.html`)).join("\n"))

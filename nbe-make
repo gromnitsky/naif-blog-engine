@@ -59,7 +59,7 @@ $(web)/rss.xml: $(web)/index.json $(src)/config.json
 compile += $(web)/rss.xml
 
 # also makes $@.map source-map file
-$(web)/nav.js: $(mk)/nav.js
+$(web)/nav.js: $(mk)/nav.js $(mk)/lib.common.js
 	$(mkdir)
 	browserify -d $< | terser -m --source-map content=inline,url=$(notdir $@).map -o $@
 
