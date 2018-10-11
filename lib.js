@@ -1,6 +1,7 @@
 let path = require('path')
 let crypto = require('crypto')
 let fs = require('fs')
+let execSync = require('child_process').execSync
 let front_matter = require('front-matter')
 let marked = require('marked')
 
@@ -57,7 +58,21 @@ exports.MarkdownParser = class {
 
     body(opt) {
 	this.parse()
-	return marked(this.md.body, opt)
+	return marked(this.preprocess(), opt)
+    }
+
+    preprocess() {
+	if (!this.md.attributes.preprocessor) return this.md.body
+	let dir_save = process.cwd()
+	process.chdir(path.dirname(this.file))
+	let r
+	try {
+	    r = execSync(this.md.attributes.preprocessor,
+			 {input: this.md.body}).toString()
+	} finally {
+	    process.chdir(dir_save)
+	}
+	return r
     }
 }
 
