@@ -23,6 +23,10 @@ async function widgets(index) {
 	metatags: {
 	    authors: metatags_list(relto, 'authors', group_by_author),
 	    tags: metatags_list(relto, 'tags', group_by_tag)
+	},
+	post: {
+	    prev: prev_or_next(md_file, index, cur => cur-1, '&raquo;'),
+	    next: prev_or_next(md_file, index, cur => cur+1, '&laquo;')
 	}
     }
 }
@@ -30,20 +34,16 @@ async function widgets(index) {
 function mount(widgets) {
     console.log('mount', widgets)
     let widget_mount = w => {
-	let node = document.querySelector(w.id)
-	node ? node.innerHTML = w.m : console.log(`'${w.id}' isn't used`)
+	let node = document.querySelector(w.id);
+	node && w.m ? node.innerHTML = w.m : console.log(`'${w.id}' isn't used`)
     }
 
-    ;[ {id: "#nbe__contents--pages", m: widgets.contents.pages},
-       {id: "#nbe__contents--posts", m: widgets.contents.posts},
-       {id: "#nbe__metatags--authors", m: widgets.metatags.authors},
-       {id: "#nbe__metatags--tags", m: widgets.metatags.tags}]
-	.forEach(widget_mount)
-
-    let md_file
-    try { md_file = file() } catch (e) { /* not a post/page */ }
-    if (md_file) { // prevnext
-    }
+    [{id: "#nbe__contents--pages", m: widgets.contents.pages},
+     {id: "#nbe__contents--posts", m: widgets.contents.posts},
+     {id: "#nbe__metatags--authors", m: widgets.metatags.authors},
+     {id: "#nbe__metatags--tags", m: widgets.metatags.tags},
+     {id: "#nbe_post--next", m: widgets.post.next},
+     {id: "#nbe_post--prev", m: widgets.post.prev}].forEach(widget_mount)
 }
 
 function root() { return dataset('body>header', 'root') }
@@ -278,11 +278,13 @@ function index_group_by(index, prop) {
     }, {})
 }
 
-// function detect_input_type(file) {
-//     if (is_post(file)) return 'post'
-//     if (file === 'home') return 'home'
-//     if (/^(author|tag)$/.test(path.dirname(file))) return 'metatags'
-//     return 'page'
-// }
+function is_post(file) { return /^\d{4}\/\d{2}\/\d{2}\b/.test(file) }
 
-// function is_post(file) { return /^\d{4}\/\d{2}\/\d{2}\b/.test(file) }
+function prev_or_next(file, index, condition, text) {
+    if (!is_post(file)) return
+
+    let cur = index.posts.findIndex( v => v.file === file)
+    let idx = condition(cur)
+    if (cur !== -1 && idx >= 0 && idx <= index.posts.length-1)
+	return `<a href="${link(index.posts[idx].file)}" title="${index.posts[idx].subject}">${text}</a>`
+}
