@@ -75,6 +75,7 @@ nav.prevnext {
 }
 
 nav.prevnext a {
+  display: block;
   border: 1px solid var(--faint-gray);
   border-radius: 6px;
   padding: 0 calc(var(--gutter)*4);

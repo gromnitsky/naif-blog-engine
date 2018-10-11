@@ -1,18 +1,10 @@
 <section>
 <article data-file="<%= file %>">
 
-  <% if (is_post(file)) { %>
-  <nav class="screen prevnext">
-    <% if (next) { %><a href="<%= next.link %>" title="<%= next.subject %>">&laquo;</a><% } else { %><span></span><% } %>
-    <% if (prev) { %><a href="<%= prev.link %>" title="<%= prev.subject %>">&raquo;</a><% } else { %><span></span><% } %>
-  </nav>
-
-  <hr>
   <nav class="screen prevnext">
     <span id="nbe_post--next"></span>
     <span id="nbe_post--prev"></span>
   </nav>
-  <% } %>
 
   <h2><%= subject %></h2>
 
