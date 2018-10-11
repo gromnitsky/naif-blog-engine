@@ -29,6 +29,21 @@ async function widgets(index) {
 
 function mount(widgets) {
     console.log('mount', widgets)
+    let widget_mount = w => {
+	let node = document.querySelector(w.id)
+	node ? node.innerHTML = w.m : console.log(`'${w.id}' isn't used`)
+    }
+
+    ;[ {id: "#nbe__contents--pages", m: widgets.contents.pages},
+       {id: "#nbe__contents--posts", m: widgets.contents.posts},
+       {id: "#nbe__metatags--authors", m: widgets.metatags.authors},
+       {id: "#nbe__metatags--tags", m: widgets.metatags.tags}]
+	.forEach(widget_mount)
+
+    let md_file
+    try { md_file = file() } catch (e) { /* not a post/page */ }
+    if (md_file) { // prevnext
+    }
 }
 
 function root() { return dataset('body>header', 'root') }
@@ -248,7 +263,7 @@ function metatags_link(relto, type, template) {
 
 function metatags_list(relto, type, group) {
     return '<ul>' + Object.keys(group).map( name => {
-	return `<li><a href=${metatags_link(relto, type, name)}">${name}</a> (${group[name].length})</li>`
+	return `<li><a href="${metatags_link(relto, type, name)}">${name}</a> (${group[name].length})</li>`
     }).join("\n") + '</ul>'
 }
 
