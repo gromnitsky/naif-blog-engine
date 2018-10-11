@@ -1,0 +1,94 @@
+#!/usr/bin/env node
+
+let fs = require('fs')
+let path = require('path')
+let ejs = require('ejs')
+let lib = require('./lib')
+let common = require('./lib.common')
+
+let argv = process.argv.slice(2)
+if (argv.length !== 6) {
+    lib.errx(1, 'Usage:', lib.prog,
+	     'NAME index.json config.json header.ejs body.ejs footer.ejs')
+}
+
+let [index, config] = argv.slice(1,3).map(lib.json)
+let [header, body, footer] = argv.slice(3,6)
+    .map( v => fs.readFileSync(v).toString())
+process.stdout.write(convert(argv[0], index, config, header, body, footer))
+
+
+function convert(file, index, config, header, body, footer) {
+    let view = {
+	file,
+	index,
+	config,
+
+	// the same `index`, but from a different perspective
+	group_by_author: common.index_group_by(index, 'authors'),
+	group_by_tag: common.index_group_by(index, 'tags'),
+
+	// complex widgets
+	metatags_inline,
+
+	// helpers
+	is_post: common.is_post,
+	birthtime_ymd: common.birthtime_ymd,
+	link: common.link,
+	path,
+    }
+
+    let relto = file
+    view.root = common.rootdir(relto)
+
+    switch (detect_input_type(file)) {
+    case 'post':
+	throw new Error(`${file} isn't supported`)
+    case 'home':
+	relto = ''
+	view.root = relto
+	view.subject = 'Home'
+	view.body = file => new lib.MarkdownParser(file).body({baseUrl: file})
+	break
+    case 'metatags':
+	view.subject = metatags(view['group_by_'+path.dirname(file)],
+				path.basename(file))
+	break
+    default: // page
+	throw new Error(`${file} isn't supported`)
+    }
+
+    header = ejs.render(header, view)
+    body = ejs.render(body, view)
+    footer = ejs.render(footer, view)
+
+    return [header, body, footer].join("\n")
+}
+
+function detect_input_type(file) {
+    if (common.is_post(file)) return 'post'
+    if (file === 'home') return 'home'
+    if (/^(author|tag)$/.test(path.dirname(file))) return 'metatags'
+    return 'page'
+}
+
+function metatags(group, target) {
+    for (let candidate of Object.keys(group)) {
+	if (target === lib.md5(candidate)) return candidate
+    }
+    throw new Error(`failed to find ${target}`)
+}
+
+function metatags_inline(relto, type, list) {
+    return list.map( val => {
+	return ejs.render('<a href="<%= link %>"><%= text %></a>', {
+	    text: val,
+	    link: metatags_link(relto, type, val)
+	})
+    }).join(", ")
+}
+
+function metatags_link(relto, type, template) {
+    let prefix = { tags: 't', authors: 'a' }[type]
+    return path.join(common.rootdir(relto), prefix, lib.md5(template) + '.html')
+}

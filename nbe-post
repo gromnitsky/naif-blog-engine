@@ -1,0 +1,63 @@
+#!/usr/bin/env node
+
+let fs = require('fs')
+let path = require('path')
+let ejs = require('ejs')
+let lib = require('./lib')
+let common = require('./lib.common')
+
+let argv = process.argv.slice(2)
+if (argv.length !== 5) {
+    lib.errx(1, 'Usage:', lib.prog,
+	     'file.md config.json header.ejs body.ejs footer.ejs')
+}
+
+let [header, body, footer] = argv.slice(2,5)
+    .map( v => fs.readFileSync(v).toString())
+process.stdout.write(convert(argv[0], lib.json(argv[1]), header, body, footer))
+
+
+function convert(file, config, header, body, footer) {
+    let view = {
+	file,
+	config,
+
+	// complex widgets
+	metatags_inline,
+
+	// helpers
+	is_post: common.is_post,
+	birthtime_ymd: common.birthtime_ymd,
+	link: common.link,
+	path,
+	root: common.rootdir(file),
+    }
+
+    let markdown_parse = () => {
+	let mp = new lib.MarkdownParser(file)
+	let fm = mp.front_matter()
+	view = Object.assign(view, fm, { body: mp.body() })
+    }
+
+    markdown_parse()
+
+    header = ejs.render(header, view)
+    body = ejs.render(body, view)
+    footer = ejs.render(footer, view)
+
+    return [header, body, footer].join("\n")
+}
+
+function metatags_inline(relto, type, list) {
+    return list.map( val => {
+	return ejs.render('<a href="<%= link %>"><%= text %></a>', {
+	    text: val,
+	    link: metatags_link(relto, type, val)
+	})
+    }).join(", ")
+}
+
+function metatags_link(relto, type, template) {
+    let prefix = { tags: 't', authors: 'a' }[type]
+    return path.join(common.rootdir(relto), prefix, lib.md5(template) + '.html')
+}

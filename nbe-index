@@ -2,10 +2,11 @@
 
 let path = require('path')
 let lib = require('./lib')
+let common = require('./lib.common')
 
 let files = process.argv.slice(2).map(path.normalize)
-let fposts = files.filter(lib.is_post).filter(is_md)
-let fpages = files.filter( v => !lib.is_post(v)).filter(is_md)
+let fposts = files.filter(common.is_post).filter(is_md)
+let fpages = files.filter( v => !common.is_post(v)).filter(is_md)
 
 process.stdout.write(JSON.stringify({
     posts: rev_sort_by_file_name(fposts.map(post)),

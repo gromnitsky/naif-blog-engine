@@ -2,15 +2,16 @@
 
 let path = require('path')
 let lib = require('./lib')
+let common = require('./lib.common')
 
 if (process.argv.length !== 2+2)
     lib.errx(1, 'Usage:', lib.prog, 'index.json output-dir')
 
 let index = lib.json(process.argv[2])
 let out = process.argv[3]
-console.log(Object.keys(lib.index_group_by(index, 'authors'))
+console.log(Object.keys(common.index_group_by(index, 'authors'))
 	    .map( v => 'compile += ' + path.join(out, 'a', `${lib.md5(v)}.html`))
 	    .join("\n"))
-console.log(Object.keys(lib.index_group_by(index, 'tags'))
+console.log(Object.keys(common.index_group_by(index, 'tags'))
 	    .map( v => 'compile += ' + path.join(out, 't', `${lib.md5(v)}.html`))
 	    .join("\n"))

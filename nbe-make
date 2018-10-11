@@ -21,9 +21,9 @@ static.dest := $(filter-out %.md, $(all.dest))
 compile:
 compile := $(html.dest) $(static.dest)
 
-$(web)/%.html: $(src)/%.md $(web)/index.json $(src)/config.json $(src)/header.ejs $(src)/body.ejs $(src)/footer.ejs
+$(web)/%.html: $(src)/%.md $(src)/config.json $(src)/header.ejs $(src)/body.ejs $(src)/footer.ejs
 	$(mkdir)
-	$(mk)/nbe-html $^ > $@
+	$(mk)/nbe-post $^ > $@
 
 $(web)/index.json: $(filter %.md, $(all.src))
 	$(mkdir)
@@ -40,15 +40,15 @@ include $(out)/metatargets.mk
 
 $(web)/a/%.html: $(web)/index.json $(src)/config.json $(src)/header.ejs $(src)/body.author.ejs $(src)/footer.ejs
 	$(mkdir)
-	$(mk)/nbe-html author/$* $^ > $@
+	$(mk)/nbe-metapage author/$* $^ > $@
 
 $(web)/t/%.html: $(web)/index.json $(src)/config.json $(src)/header.ejs $(src)/body.tag.ejs $(src)/footer.ejs
 	$(mkdir)
-	$(mk)/nbe-html tag/$* $^ > $@
+	$(mk)/nbe-metapage tag/$* $^ > $@
 
 $(web)/index.html: $(web)/index.json $(src)/config.json $(src)/header.ejs $(src)/body.home.ejs $(src)/footer.ejs
 	$(mkdir)
-	$(mk)/nbe-html home $^ > $@
+	$(mk)/nbe-metapage home $^ > $@
 
 compile += $(web)/index.html
 
@@ -59,7 +59,7 @@ $(web)/rss.xml: $(web)/index.json $(src)/config.json
 compile += $(web)/rss.xml
 
 # also makes $@.map source-map file
-$(web)/nav.js: $(mk)/nav.js $(web)/index.json
+$(web)/nav.js: $(mk)/nav.js
 	$(mkdir)
 	browserify -d $< | terser -m --source-map content=inline,url=$(notdir $@).map -o $@
 

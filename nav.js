@@ -1,5 +1,7 @@
 'use strict';
 
+let path = require('path')
+let common = require('./lib.common')
 let md5 = require('blueimp-md5') // for nodejs imp is too big
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -11,8 +13,8 @@ function getindex() {
 }
 
 async function widgets(index) {
-    let group_by_author = index_group_by(index, 'authors')
-    let group_by_tag = index_group_by(index, 'tags')
+    let group_by_author = common.index_group_by(index, 'authors')
+    let group_by_tag = common.index_group_by(index, 'tags')
 
     let md_file
     try { md_file = file() } catch (e) { /* not a post/page */ }
@@ -191,20 +193,6 @@ class TNode {
     }
 }
 
-let path = require('path')
-
-// FIXME: remove `path` dependency
-function rootdir(file) {
-    let np = path.normalize(file)
-    if (/^\.\/*$/.test(np)) return np
-    return path.dirname(file).replace(/[^/]+/g, '..')
-}
-
-function link(file, relto) {
-    return path.join(rootdir(relto == null ? file : relto),
-		     file.replace(/\.md$/, '.html'))
-}
-
 function contents(file, index) {
     let tnode = (src, node_path) => {
 	let root = new TNode("root")
@@ -240,7 +228,7 @@ function contents(file, index) {
 		if (kid.selected)
 		    r.push(`<summary class="selected"><b>${kid.payload.subject}</b></summary>`)
 		else
-		    r.push(`<summary><a href="${link(kid.payload.file, file)}">${kid.payload.subject}</a></summary>`)
+		    r.push(`<summary><a href="${common.link(kid.payload.file, file)}">${kid.payload.subject}</a></summary>`)
 	    } else {
 		r.push(`<summary>${kid.name}</summary>`)
 		r.push(tree(kid, file))
@@ -258,7 +246,7 @@ function contents(file, index) {
 
 function metatags_link(relto, type, template) {
     let prefix = { tags: 't', authors: 'a' }[type]
-    return path.join(rootdir(relto), prefix, md5(template) + '.html')
+    return path.join(common.rootdir(relto), prefix, md5(template) + '.html')
 }
 
 function metatags_list(relto, type, group) {
@@ -267,24 +255,11 @@ function metatags_list(relto, type, group) {
     }).join("\n") + '</ul>'
 }
 
-function index_group_by(index, prop) {
-    let articles = index.posts.concat(index.pages)
-    return articles.reduce( (result, article) => {
-	article[prop].forEach( val => {
-	    if (!Array.isArray(result[val])) result[val] = []
-	    result[val].push(article)
-	})
-	return result
-    }, {})
-}
-
-function is_post(file) { return /^\d{4}\/\d{2}\/\d{2}\b/.test(file) }
-
 function prev_or_next(file, index, condition, text) {
-    if (!is_post(file)) return
+    if (!common.is_post(file)) return
 
     let cur = index.posts.findIndex( v => v.file === file)
     let idx = condition(cur)
     if (cur !== -1 && idx >= 0 && idx <= index.posts.length-1)
-	return `<a href="${link(index.posts[idx].file)}" title="${index.posts[idx].subject}">${text}</a>`
+	return `<a href="${common.link(index.posts[idx].file)}" title="${index.posts[idx].subject}">${text}</a>`
 }
