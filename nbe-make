@@ -50,7 +50,7 @@ $(web)/index.html: $(web)/index.json $(src)/config.json $(src)/header.ejs $(src)
 	$(mkdir)
 	$(mk)/nbe-metapage home $^ > $@
 
-compile += $(web)/index.html
+compile += $(web)/index.html $(web)/index.json
 
 $(web)/rss.xml: $(web)/index.json $(src)/config.json
 	$(mkdir)
@@ -64,6 +64,13 @@ $(web)/nav.js: $(mk)/nav.js $(mk)/lib.common.js
 	browserify -d $< | terser -m --source-map content=inline,url=$(notdir $@).map -o $@
 
 compile += $(web)/nav.js
+
+# a sitemap for the google console
+$(web)/sitemap.txt:
+	$(mkdir)
+	@echo "$(strip $(compile))" | tr ' ' \\n | grep '\.html$$' | sort -r | sed 's|^$(web)/|$(shell json < config.json rss.baseUrl)|' > $@
+
+compile += $(web)/sitemap.txt
 
 compile: $(compile)
 
@@ -79,7 +86,7 @@ shellquote = '$(subst ','\'',$(1))'
 # print a diff between should-be files & a real situation
 .PHONY: check
 check: compile
-	@echo "$(strip $(compile))" | tr ' ' \\n | sort > should
+	@echo $(web)/nav.js.map "$(strip $(compile))" | tr ' ' \\n | sort > should
 	@find $(web) -type f | sort > real
 	@diff -u should real; c=$$?; rm should real; exit $$c
 
