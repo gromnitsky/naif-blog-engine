@@ -217,18 +217,17 @@ function contents(file, index) {
 	return file.split('/').slice(1)
     }
 
-    // FIXME: escape values
     function tree(tnode, file) {
 	let r = []
 	tnode.kids.forEach( kid => {
 	    r.push(`<details ${kid.selected ? 'open' : ''}>`)
 	    if (!kid.kids.length) {
 		if (kid.selected)
-		    r.push(`<summary class="selected"><b>${kid.payload.subject}</b></summary>`)
+		    r.push(`<summary class="selected"><b>${e(kid.payload.subject)}</b></summary>`)
 		else
-		    r.push(`<summary><a href="${common.link(kid.payload.file, file)}">${kid.payload.subject}</a></summary>`)
+		    r.push(`<summary><a href="${e(common.link(kid.payload.file, file))}">${e(kid.payload.subject)}</a></summary>`)
 	    } else {
-		r.push(`<summary>${kid.name}</summary>`)
+		r.push(`<summary>${e(kid.name)}</summary>`)
 		r.push(tree(kid, file))
 	    }
 	    r.push('</details>')
@@ -244,7 +243,7 @@ function contents(file, index) {
 
 function metatags_list(relto, type, group) {
     return '<ul>' + Object.keys(group).map( name => {
-	return `<li><a href="${common.metatags_link(relto, type, name)}">${name}</a> (${group[name].length})</li>`
+	return `<li><a href="${e(common.metatags_link(relto, type, name))}">${e(name)}</a> (${e(group[name].length)})</li>`
     }).join("\n") + '</ul>'
 }
 
@@ -254,5 +253,18 @@ function prev_or_next(file, index, condition, text) {
     let cur = index.posts.findIndex( v => v.file === file)
     let idx = condition(cur)
     if (cur !== -1 && idx >= 0 && idx <= index.posts.length-1)
-	return `<a href="${common.link(index.posts[idx].file)}" title="${index.posts[idx].subject}">${text}</a>`
+	return `<a href="${e(common.link(index.posts[idx].file))}" title="${e(index.posts[idx].subject)}">${text}</a>`
+}
+
+function e(s) {
+    if (s == null) return ''
+    return s.toString().replace(/[<>&'"]/g, ch => {
+        switch (ch) {
+        case '<': return '&lt;'
+        case '>': return '&gt;'
+        case '&': return '&amp;'
+        case '\'': return '&apos;'
+        case '"': return '&quot;'
+        }
+    })
 }
