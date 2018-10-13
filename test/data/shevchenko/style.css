@@ -32,6 +32,13 @@ embed {
   height: auto;
 }
 
+.img--float-right {
+  float: right;
+  max-width: 100%;
+  width: auto;
+  margin: 1em 0 1em 1em;
+}
+
 pre {
   padding: 2px 2px 2px 1em;
   word-wrap: break-word;
