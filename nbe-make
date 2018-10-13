@@ -21,9 +21,17 @@ static.dest := $(filter-out %.md, $(all.dest))
 compile:
 compile := $(html.dest) $(static.dest)
 
-$(web)/%.html: $(src)/%.md $(src)/config.json $(src)/header.ejs $(src)/body.ejs $(src)/footer.ejs
+.SECONDEXPANSION:
+
+$(web)/%.html: $(src)/%.md $(src)/config.json $(src)/header.ejs $(src)/body.ejs $(src)/footer.ejs $$(call post-deps,$$*)
 	$(mkdir)
-	$(mk)/nbe-post $^ > $@
+	$(mk)/nbe-post $< $(src)/config.json $(src)/header.ejs $(src)/body.ejs $(src)/footer.ejs > $@
+
+# grab the deps for a post/page IF the deps are in `XXXX/page/`
+# dir, when the post/page is `XXXX/page.md`
+#
+# $(call post-deps,$*)
+post-deps = $(patsubst $(src)/%, $(web)/%, $(wildcard $(src)/$1/*))
 
 $(web)/index.json: $(filter %.md, $(all.src))
 	$(mkdir)
