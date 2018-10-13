@@ -76,7 +76,7 @@ compile += $(web)/nav.js
 # a sitemap for the google console
 $(web)/sitemap.txt:
 	$(mkdir)
-	@echo "$(strip $(compile))" | tr ' ' \\n | grep '\.html$$' | sort -r | sed 's|^$(web)/|$(shell json < config.json rss.baseUrl)|' > $@
+	@echo "$(strip $(filter-out $(web)/google%.html,$(compile)))" | tr ' ' \\n | grep '\.html$$' | sort -r | sed 's|^$(web)/|$(shell json < config.json rss.baseUrl)|' > $@
 
 compile += $(web)/sitemap.txt
 
