@@ -29,7 +29,8 @@ exports.index_group_by = function(index, prop) {
 
 exports.birthtime_ymd = function(file) {
     let d = birthtime(file)
-    return d && [d.getFullYear(), d.getMonth()+1, d.getDate()].join('-')
+    let pad = s => ('0'+s).slice(-2)
+    return d && [d.getFullYear(), pad(d.getMonth()+1), pad(d.getDate())].join('-')
 }
 
 function birthtime(file) {

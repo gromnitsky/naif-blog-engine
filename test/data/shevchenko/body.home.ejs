@@ -6,8 +6,9 @@
 <article>
   <h2><a href="<%= link(post.file, root) %>"><%= post.subject %></a></h2>
   <p>
-    Air Date: <%= birthtime_ymd(post.file) %><br>
-    Latest update: <%= new Date(post.mtime).toLocaleString() %>
+    Air Date: <time><%= birthtime_ymd(post.file) %></time><br>
+    Latest update: <time datetime="<%= new Date(post.mtime).toISOString()
+ %>"><%= new Date(post.mtime).toLocaleString() %></time>
   </p>
 
   <%- body(post.file) %>
