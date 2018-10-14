@@ -25,7 +25,7 @@ compile := $(html.dest) $(static.dest)
 
 $(web)/%.html: $(src)/%.md $(src)/config.json $(src)/header.ejs $(src)/body.ejs $(src)/footer.ejs $$(call post-deps,$$*)
 	$(mkdir)
-	$(mk)/nbe-post $< $(src)/config.json $(src)/header.ejs $(src)/body.ejs $(src)/footer.ejs > $@
+	$(mk)/post $< $(src)/config.json $(src)/header.ejs $(src)/body.ejs $(src)/footer.ejs > $@
 
 # grab the deps for a post/page IF the deps are in `XXXX/page/`
 # dir, when the post/page is `XXXX/page.md`
@@ -35,34 +35,34 @@ post-deps = $(patsubst $(src)/%, $(web)/%, $(wildcard $(src)/$1/*))
 
 $(web)/index.json: $(filter %.md, $(all.src))
 	$(mkdir)
-	$(mk)/nbe-index $^ > $@
+	$(mk)/index $^ > $@
 
 $(static.dest): $(web)/%: $(src)/%
 	$(mkdir)
 	$(copy)
 
 $(out)/metatargets.mk: $(web)/index.json
-	$(mk)/nbe-make-metatargets $< $(web) > $@
+	$(mk)/print-metatargets $< $(web) > $@
 
 include $(out)/metatargets.mk
 
 $(web)/a/%.html: $(web)/index.json $(src)/config.json $(src)/header.ejs $(src)/body.author.ejs $(src)/footer.ejs
 	$(mkdir)
-	$(mk)/nbe-metapage author/$* $^ > $@
+	$(mk)/metapage author/$* $^ > $@
 
 $(web)/t/%.html: $(web)/index.json $(src)/config.json $(src)/header.ejs $(src)/body.tag.ejs $(src)/footer.ejs
 	$(mkdir)
-	$(mk)/nbe-metapage tag/$* $^ > $@
+	$(mk)/metapage tag/$* $^ > $@
 
 $(web)/index.html: $(web)/index.json $(src)/config.json $(src)/header.ejs $(src)/body.home.ejs $(src)/footer.ejs
 	$(mkdir)
-	$(mk)/nbe-metapage home $^ > $@
+	$(mk)/metapage home $^ > $@
 
 compile += $(web)/index.html $(web)/index.json
 
 $(web)/rss.xml: $(web)/index.json $(src)/config.json
 	$(mkdir)
-	$(mk)/nbe-rss $^ > $@
+	$(mk)/rss $^ > $@
 
 compile += $(web)/rss.xml
 
