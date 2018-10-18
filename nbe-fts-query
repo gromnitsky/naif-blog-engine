@@ -1,0 +1,12 @@
+#!/usr/bin/env node
+
+let lib = require('./lib')
+let fts = require('./lib.fts')
+let Database = require('better-sqlite3')
+
+let argv = fts.argv_parse(process.argv.slice(2))
+if (!(argv.db && argv._.length))
+    lib.errx(1, 'Usage:', lib.prog, `--db file.sqlite3 QUERY\n${fts.help}`)
+
+let db = new Database(argv.db, { readonly: true })
+console.log(fts.query(db, argv))
