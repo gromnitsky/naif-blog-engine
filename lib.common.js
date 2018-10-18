@@ -28,12 +28,12 @@ exports.index_group_by = function(index, prop) {
 }
 
 exports.birthtime_ymd = function(file) {
-    let d = birthtime(file)
+    let d = exports.birthtime(file)
     let pad = s => ('0'+s).slice(-2)
     return d && [d.getFullYear(), pad(d.getMonth()+1), pad(d.getDate())].join('-')
 }
 
-function birthtime(file) {
+exports.birthtime = function(file) {
     if (!exports.is_post(file)) return
     return new Date(file.split(path.sep).slice(0,3).join('-') + 'T00:00:00')
 }

@@ -1,8 +1,11 @@
 {
     "dependencies": {
+        "better-sqlite3": "^5.0.1",
         "blueimp-md5": "^2.10.0",
         "ejs": "^2.6.1",
+        "ent": "^2.2.0",
         "front-matter": "^2.3.0",
-        "marked": "^0.5.1"
+        "marked": "^0.5.1",
+        "parse5": "^5.1.0"
     }
 }

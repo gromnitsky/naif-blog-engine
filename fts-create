@@ -1,0 +1,47 @@
+#!/usr/bin/env node
+
+let fs = require('fs')
+let lib = require('./lib')
+let common = require('./lib.common')
+let html = require('./lib.html')
+let Database = require('better-sqlite3')
+
+if (process.argv.length !== 2+2)
+    lib.errx(1, 'Usage:', lib.prog, 'index.json out.sqlite3')
+main(...process.argv.slice(2))
+
+function main(indexfile, dbfile) {
+    let index = lib.json(indexfile)
+    let group_by_author = common.index_group_by(index, 'authors')
+    let group_by_tag = common.index_group_by(index, 'tags')
+
+    try { fs.unlinkSync(dbfile) } catch (e) { /* ignore */ }
+    let db = new Database(dbfile)
+
+    db.prepare(`CREATE VIRTUAL TABLE fts USING fts5(file UNINDEXED, subject UNINDEXED, date UNINDEXED, body)`).run()
+    db.prepare(`CREATE TABLE metatags(file, type, name)`).run()
+
+    metatags_add(db, group_by_author, 'author')
+    metatags_add(db, group_by_tag, 'tag')
+    posts_add(db, index.posts.concat(index.pages))
+}
+
+function metatags_add(db, group, type) {
+    let ins = db.prepare(`INSERT INTO metatags(file,type,name) VALUES (?,?,?)`)
+    for (let key in group)
+	group[key].forEach( post => ins.run(post.file, type, key))
+}
+
+function posts_add(db, posts) {
+    let ins = db.prepare(`INSERT INTO fts(file,subject,date,body) VALUES (?,?,?,?)`)
+    for (let post of posts) {
+	let body = md2txt(post.file)
+	let date = common.birthtime(post.file)
+	ins.run(post.file, post.subject, date ? date.toISOString() : null, body)
+    }
+}
+
+function md2txt(file) {
+    let mp = new lib.MarkdownParser(file)
+    return mp.front_matter().subject + "\n\n" + html.html2text(mp.body())
+}
