@@ -4,13 +4,14 @@ src := .
 out := _out
 web := $(out)/web
 
-req := $(addprefix $(src)/,body.author.ejs body.ejs body.home.ejs body.tag.ejs config.json footer.ejs header.ejs)
+templates := $(addprefix $(src)/,body.author.ejs body.ejs body.home.ejs body.tag.ejs footer.ejs header.ejs)
+req := $(templates) $(src)/config.json
 ifneq ($(wildcard $(req)), $(req))
 $(error The curren dir ($(CURDIR)) does not look like a naif-blog-engine material. Run nbe-make-new-blog to create one)
 endif
 
 mk := $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
-all.src := $(filter-out $(wildcard $(src)/*.mk) $(req) \
+all.src := $(filter-out $(wildcard $(src)/*.mk) $(templates) \
   $(src)/.gitignore $(src)/node_modules, \
   $(shell find $(src) ! -path "*/.git/*" ! -path '$(src)/$(out)/*' -type f))
 all.dest := $(patsubst $(src)/%, $(web)/%, $(all.src))
@@ -49,6 +50,7 @@ $(static.dest): $(web)/%: $(src)/%
 
 $(out)/metatargets.mk: $(web)/index.json
 	$(mk)/print-metatargets $< $(web) > $@
+	@echo '*** RESTARTING MAKE ***'
 
 include $(out)/metatargets.mk
 
@@ -73,11 +75,15 @@ $(web)/rss.xml: $(web)/index.json $(src)/config.json
 compile += $(web)/rss.xml
 
 # also makes $@.map source-map file
-$(web)/nav.js: $(mk)/nav.js $(mk)/lib.common.js
+$(web)/nav.js: $(mk)/nav.js $(mk)/lib.common.js $(mk)/lib/web.js
 	$(mkdir)
-	browserify -d $< | terser -m --source-map content=inline,url=$(notdir $@).map -o $@
+	$(browserify)
 
-compile += $(web)/nav.js
+$(web)/fts.js: $(mk)/fts.js $(mk)/lib/web.js
+	$(mkdir)
+	$(browserify)
+
+compile += $(web)/nav.js $(web)/fts.js
 
 # a sitemap for the google console
 $(web)/sitemap.txt: $(web)/index.json
@@ -92,6 +98,7 @@ copy = cp $< $@
 mkdir = @mkdir -p $(dir $@)
 shellquote = '$(subst ','\'',$(1))'
 #'
+browserify = browserify -d $< | terser -m --source-map content=inline,url=$(notdir $@).map -o $@
 
 .DELETE_ON_ERROR:
 

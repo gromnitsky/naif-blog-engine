@@ -3,5 +3,6 @@
     "rss": {
         "baseUrl": "http://example.com/blog/",
         "author": "Тарас Шевченко"
-    }
+    },
+    "fts": "http://localhost:3000/"
 }

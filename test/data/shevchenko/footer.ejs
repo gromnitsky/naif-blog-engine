@@ -29,3 +29,7 @@
 </footer>
 
 <script src="<%= path.join(root, 'nav.js') %>"></script>
+<% if (config.fts) { %>
+<script src="<%= path.join(root, 'fts.js') %>"></script>
+<% } %>
+
