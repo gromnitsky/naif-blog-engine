@@ -57,7 +57,7 @@ class SearchDialog {
 
     send(query) {
 	let url = `${this.conf.fts}/?q=${encodeURIComponent(query)}`
-	return web.efetch(url).then( r => r.json())
+	return web.fetch_json(url)
     }
 
     search_error(e) {

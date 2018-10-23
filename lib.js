@@ -3,10 +3,8 @@
 let path = require('path')
 let fs = require('fs')
 let execSync = require('child_process').execSync
-let ejs = require('ejs')
 let front_matter = require('front-matter')
 let marked = require('marked')
-let common = require('./lib.common')
 
 exports.prog = path.basename(process.argv[1])
 exports.errx = function(code, ...args) {
@@ -76,13 +74,4 @@ exports.MarkdownParser = class {
 	}
 	return r
     }
-}
-
-exports.metatags_inline = function(relto, type, list) {
-    return list.map( val => {
-	return ejs.render('<a href="<%= link %>"><%= text %></a>', {
-	    text: val,
-	    link: common.metatags_link(relto, type, val)
-	})
-    }).join(", ")
 }

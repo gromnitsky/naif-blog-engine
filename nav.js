@@ -1,23 +1,19 @@
 'use strict';
 
-let path = require('path')
 let common = require('./lib.common')
+let web = require('./lib/web')
 
 document.addEventListener('DOMContentLoaded', function() {
-    getindex().then(widgets).then(mount)
+    web.getindex().then(widgets).then(mount)
 })
-
-function getindex() {
-    return efetch(path.join(root(), 'index.json')).then( r => r.json())
-}
 
 async function widgets(index) {
     let group_by_author = common.index_group_by(index, 'authors')
     let group_by_tag = common.index_group_by(index, 'tags')
 
     let md_file
-    try { md_file = file() } catch (e) { /* not a post/page */ }
-    let relto = md_file || root()
+    try { md_file = web.file() } catch (e) { /* not a post/page */ }
+    let relto = md_file || web.root()
 
     return {
 	contents: contents(relto, index),
@@ -44,20 +40,6 @@ function mount(widgets) {
      {id: "#nbe__metatags--tags", m: widgets.metatags.tags},
      {id: "#nbe_post--next", m: widgets.post.next},
      {id: "#nbe_post--prev", m: widgets.post.prev}].forEach(widget_mount)
-}
-
-function root() { return dataset('body>header', 'root') }
-function file() { return dataset('body>main>section>article', 'file') }
-
-function dataset(selector, attr) {
-    let h = document.querySelector(selector)
-    if (h && h.dataset[attr] != null) return h.dataset[attr]
-    throw new Error(`no data-${attr} attr on '${selector}'`)
-}
-
-function efetch(url, opt) {
-    let err = r => { if (!r.ok) throw new Error(r.statusText); return r }
-    return fetch(url, opt).then(err)
 }
 
 class TNode {
@@ -223,11 +205,11 @@ function contents(file, index) {
 	    r.push(`<details ${kid.selected ? 'open' : ''}>`)
 	    if (!kid.kids.length) {
 		if (kid.selected)
-		    r.push(`<summary class="selected"><b>${e(kid.payload.subject)}</b></summary>`)
+		    r.push(`<summary class="selected"><b>${common.e(kid.payload.subject)}</b></summary>`)
 		else
-		    r.push(`<summary><a href="${e(common.link(kid.payload.file, file))}">${e(kid.payload.subject)}</a></summary>`)
+		    r.push(`<summary><a href="${common.e(common.link(kid.payload.file, file))}">${common.e(kid.payload.subject)}</a></summary>`)
 	    } else {
-		r.push(`<summary>${e(kid.name)}</summary>`)
+		r.push(`<summary>${common.e(kid.name)}</summary>`)
 		r.push(tree(kid, file))
 	    }
 	    r.push('</details>')
@@ -243,7 +225,7 @@ function contents(file, index) {
 
 function metatags_list(relto, type, group) {
     return '<ul>' + Object.keys(group).map( name => {
-	return `<li><a href="${e(common.metatags_link(relto, type, name))}">${e(name)}</a> (${e(group[name].length)})</li>`
+	return `<li><a href="${common.e(common.metatags_link(relto, type, name))}">${common.e(name)}</a> (${common.e(group[name].length)})</li>`
     }).join("\n") + '</ul>'
 }
 
@@ -253,18 +235,5 @@ function prev_or_next(file, index, condition, text) {
     let cur = index.posts.findIndex( v => v.file === file)
     let idx = condition(cur)
     if (cur !== -1 && idx >= 0 && idx <= index.posts.length-1)
-	return `<a href="${e(common.link(index.posts[idx].file))}" title="${e(index.posts[idx].subject)}">${text}</a>`
-}
-
-function e(s) {
-    if (s == null) return ''
-    return s.toString().replace(/[<>&'"]/g, ch => {
-        switch (ch) {
-        case '<': return '&lt;'
-        case '>': return '&gt;'
-        case '&': return '&amp;'
-        case '\'': return '&apos;'
-        case '"': return '&quot;'
-        }
-    })
+	return `<a href="${common.e(common.link(index.posts[idx].file))}" title="${common.e(index.posts[idx].subject)}">${text}</a>`
 }
