@@ -14,34 +14,14 @@ help += $(help.local)
 
 
 
-out.fts := fts
-fts.db := $(out.fts)/db.sqlite3
-
-$(fts.db): $(out)/web/index.json
-	$(mkdir)
-	$(mk)/fts-create $< $@
-	git -C $(out.fts) init
-	git -C $(out.fts) add .
-	-git -C $(out.fts) commit -m upd
-
-fts.server.src := $(mk)/nbe-fts-server $(mk)/lib/fts.js
-fts.server.dest := $(patsubst $(mk)/%, $(out.fts)/%, $(fts.server.src))
-
-$(out.fts)/%: $(mk)/%
-	$(mkdir)
-	$(copy)
-
-.PHONY: fts-create
-fts-create: $(fts.db) $(fts.server.dest)
-
 # edit this
 .PHONY: fts-deploy
 fts-deploy: fts-kill fts-create
 	$(fts.server) &
 
 # edit this
-.PHONY: fts-deploy
+.PHONY: fts-kill
 fts-kill:
 	-pkill -f '$(fts.server)'
 
-fts.server := node $(out.fts)/nbe-fts-server $(fts.db)
+fts.server := node $(fts)/nbe-fts-server $(fts.db)

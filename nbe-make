@@ -3,6 +3,7 @@
 src := .
 out := _out
 web := $(out)/web
+fts := $(src)/_fts
 
 templates := $(addprefix $(src)/,body.author.ejs body.ejs body.home.ejs body.tag.ejs footer.ejs header.ejs)
 req := $(templates) $(src)/config.json
@@ -11,9 +12,8 @@ $(error The curren dir ($(CURDIR)) does not look like a naif-blog-engine materia
 endif
 
 mk := $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
-all.src := $(filter-out $(wildcard $(src)/*.mk) $(templates) \
-  $(src)/.gitignore $(src)/node_modules/% $(src)/fts/%, \
-  $(shell find $(src) ! -path "*/.git/*" ! -path '$(src)/$(out)/*' -type f))
+all.src := $(filter-out $(wildcard $(src)/*.mk) $(templates) $(src)/.gitignore,\
+  $(shell find $(src) ! -path "*/.git/*" ! -path '$(src)/$(out)/*' ! -path '$(fts)/*' -type f))
 all.dest := $(patsubst $(src)/%, $(web)/%, $(all.src))
 html.dest := $(patsubst %.md, %.html, $(filter %.md, $(all.dest)))
 static.dest := $(filter-out %.md, $(all.dest))
@@ -122,6 +122,7 @@ if the build fails, rm $(web)/index.json, then try again
 compile		(default)
 new		create a new blog post
 check		check for superfluous files in $(web)
+fts-create	recreate the FTS db+server in $(fts)
 
 $(web)/yyyy/mm/dd/post.html	compile only 1 particular post
 -f ~/lib/debug.mk pp-compile	print all file targets
@@ -129,5 +130,24 @@ endef
 
 .PHONY: help
 help:; $(info $(help))@:
+
+
+
+fts.db := $(fts)/db.sqlite3
+fts.server.src := $(mk)/nbe-fts-server $(mk)/lib/fts.js
+fts.server.dest := $(patsubst $(mk)/%, $(fts)/%, $(fts.server.src))
+
+$(fts.db): $(out)/web/index.json
+	$(mkdir)
+	$(mk)/fts-create $< $@
+	git -C $(fts) init && git -C $(fts) add .
+	-git -C $(fts) commit -m upd
+
+$(fts)/%: $(mk)/%
+	$(mkdir)
+	$(copy)
+
+.PHONY: fts-create
+fts-create: $(fts.db) $(fts.server.dest)
 
 -include $(src)/local.mk
