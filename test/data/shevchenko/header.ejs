@@ -21,7 +21,7 @@
 <header data-root="<%= root %>">
   <h1><a href="<%= root %>"><%= config.title %></a></h1>
   <% if (config.fts) { %>
-  <a class="nbe--search" href="#"><img src="<%= path.join(root, 'fts.svg') %>" alt="Search"></a>
+  <a style="visibility: hidden" class="nbe__search" href="#"><img src="<%= path.join(root, 'fts.svg') %>" alt="Search"></a>
   <% } %>
 </header>
 

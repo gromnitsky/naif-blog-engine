@@ -62,14 +62,19 @@ body > header {
   align-items: center;
 }
 
-body > header .nbe--search {
+body > header .nbe__search {
   height: 2em;
   flex-grow: 0.3;
   display: flex;
   justify-content: center;
 }
 
-.nbe--search img { height: inherit; }
+.nbe__search > img { height: inherit; }
+
+#nbe__search__dialog {
+  border-bottom: 1px dotted var(--body-fg);
+  padding: var(--gutter) 0;
+}
 
 body > header > h1 { margin: 0.2em; }
 

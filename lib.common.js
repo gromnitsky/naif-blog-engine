@@ -42,3 +42,22 @@ exports.metatags_link = function(relto, type, template) {
     let prefix = { tags: 't', authors: 'a' }[type]
     return path.join(exports.rootdir(relto), prefix, md5(template) + '.html')
 }
+
+exports.metatags_inline = function(relto, type, list) {
+    return list.map( val => {
+	return `<a href="${exports.e(exports.metatags_link(relto, type, val))}">${exports.e(val)}</a>`
+    }).join(", ")
+}
+
+exports.e = function(s) {
+    if (s == null) return ''
+    return s.toString().replace(/[<>&'"]/g, ch => {
+        switch (ch) {
+        case '<': return '&lt;'
+        case '>': return '&gt;'
+        case '&': return '&amp;'
+        case '\'': return '&apos;'
+        case '"': return '&quot;'
+        }
+    })
+}

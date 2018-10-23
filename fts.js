@@ -3,13 +3,15 @@
 'use strict';
 
 let web = require('./lib/web')
+let common = require('./lib.common')
 
 document.addEventListener('DOMContentLoaded', async function() {
-    let btn = document.querySelector('.nbe--search')
+    let btn = document.querySelector('.nbe__search')
     let post = document.querySelector('body > main > section')
-    if (!(btn && post)) { console.log('no .nbe--search'); return }
+    if (!(btn && post)) { console.log('no .nbe__search'); return }
 
     let sd = new SearchDialog(post, await web.getconf())
+    btn.style.visibility = 'visible'
     btn.onclick = evt => {
 	sd.toggle()
 	evt.preventDefault()
@@ -20,7 +22,7 @@ class SearchDialog {
     constructor(parent_node, conf) {
 	this.parent_node = parent_node
 	this.conf = conf
-	this.id = 'nbe__fts__searchdialog'
+	this.id = 'nbe__search__dialog'
     }
 
     is_hidden() { return this.node.style.display === 'none' }
@@ -38,15 +40,13 @@ class SearchDialog {
 	console.log('creating', this.id)
 	this.node = document.createElement('div')
 	this.node.id = this.id
-	this.node.style.borderBottom = '1px dotted #191919'
-	this.node.style.padding = '10px 0'
 
 	this.parent_node.prepend(this.node)
 	this.node.innerHTML= '<input type="search" placeholder="Search..."><div style="margin-top: 1em"></div>'
 	this.input = this.node.querySelector('input')
 	this.result = this.node.querySelector('div')
 
-	this.input.oninput = web.debounce(this.search.bind(this), 500)
+	this.input.oninput = web.debounce(this.search, 500).bind(this)
     }
 
     search() {
@@ -65,6 +65,28 @@ class SearchDialog {
     }
 
     print_results(r) {
-	console.log(r)
+	if (!r.length) { this.result.innerText = 'No matches'; return }
+	let tbl = ['<table><thead><tr>',
+		   '<th>Date</th>',
+		   '<th>Subject</th>',
+		   '<th>Snippet</th>',
+		   '<th>Authors</th>',
+		   '<th>Tags</th>',
+		   '</tr></thead><tbody>']
+	let relto = web.relto()
+	tbl = tbl.concat(r.map( e => this.entry_format(e, relto)))
+	tbl.push('</tbody></table>')
+	this.result.innerHTML = tbl.join("\n")
+    }
+
+    entry_format(e, relto) {
+	return ['<tr><td>', [
+	    common.birthtime_ymd(e.file),
+	    `<a href='${common.e(common.link(e.file, relto))}'>${common.e(e.subject)}</a>`,
+	    e.snippet,
+	    common.metatags_inline(relto, 'authors', e.authors),
+	    common.metatags_inline(relto, 'tags', e.tags)
+	].join('</td><td>'),
+		'</td></tr>'].join('')
     }
 }
