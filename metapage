@@ -4,8 +4,8 @@ let fs = require('fs')
 let path = require('path')
 let ejs = require('ejs')
 let md5 = require('blueimp-md5')
-let lib = require('./lib')
-let common = require('./lib.common')
+let lib = require('./lib/cli')
+let common = require('./lib/common')
 
 let argv = process.argv.slice(2)
 if (argv.length !== 6) {

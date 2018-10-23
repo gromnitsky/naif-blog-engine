@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 
 let fs = require('fs')
-let lib = require('./lib')
-let common = require('./lib.common')
-let html = require('./lib.html')
 let Database = require('better-sqlite3')
+let lib = require('./lib/cli')
+let common = require('./lib/common')
+let html = require('./lib/html')
 
 if (process.argv.length !== 2+2)
     lib.errx(1, 'Usage:', lib.prog, 'index.json out.sqlite3')

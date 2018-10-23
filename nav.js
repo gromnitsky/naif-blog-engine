@@ -1,6 +1,6 @@
 'use strict';
 
-let common = require('./lib.common')
+let common = require('./lib/common')
 let web = require('./lib/web')
 
 document.addEventListener('DOMContentLoaded', function() {

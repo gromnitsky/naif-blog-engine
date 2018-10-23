@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 let path = require('path')
-let lib = require('./lib')
-let common = require('./lib.common')
+let lib = require('./lib/cli')
+let common = require('./lib/common')
 
 let files = process.argv.slice(2).map(path.normalize)
 let fposts = files.filter(common.is_post).filter(is_md)

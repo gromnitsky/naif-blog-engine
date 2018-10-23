@@ -1,9 +1,7 @@
-// nav.js & fts.js
-
 'use strict';
 
 let web = require('./lib/web')
-let common = require('./lib.common')
+let common = require('./lib/common')
 
 document.addEventListener('DOMContentLoaded', async function() {
     let btn = document.querySelector('.nbe__search')

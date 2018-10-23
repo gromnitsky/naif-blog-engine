@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 let path = require('path')
-let lib = require('./lib')
-let common = require('./lib.common')
+let lib = require('./lib/cli')
+let common = require('./lib/common')
 let md5 = require('blueimp-md5')
 
 if (process.argv.length !== 2+2)

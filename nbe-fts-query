@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-let lib = require('./lib')
-let fts = require('./lib.fts')
+let lib = require('./lib/cli')
+let fts = require('./lib/fts')
 let Database = require('better-sqlite3')
 
 let argv = fts.Finder.argv_parse(process.argv.slice(2))

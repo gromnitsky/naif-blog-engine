@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 let ejs = require('ejs')
-let lib = require('./lib')
+let lib = require('./lib/cli')
 
 let argv = process.argv.slice(2)
 if (argv.length !== 2) lib.errx(1, 'Usage:', lib.prog, 'index.json config.json')

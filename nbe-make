@@ -75,7 +75,7 @@ $(web)/rss.xml: $(web)/index.json $(src)/config.json
 compile += $(web)/rss.xml
 
 # also makes $@.map source-map file
-$(web)/nav.js: $(mk)/nav.js $(mk)/lib.common.js $(mk)/lib/web.js
+$(web)/nav.js: $(mk)/nav.js $(mk)/lib/common.js $(mk)/lib/web.js
 	$(mkdir)
 	$(browserify)
 
