@@ -48,6 +48,9 @@ class SearchDialog {
     }
 
     search() {
+	if (/^\s*$/.test(this.input.value)) return
+
+	this.result.innerText = 'Fetching results...'
 	this.send(this.input.value)
 	    .then(this.print_results.bind(this))
 	    .catch(this.search_error.bind(this))
