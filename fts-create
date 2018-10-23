@@ -43,5 +43,24 @@ function posts_add(db, posts) {
 
 function md2txt(file) {
     let mp = new lib.MarkdownParser(file)
-    return mp.front_matter().subject + "\n\n" + html.html2text(mp.body())
+    return [mp.front_matter().subject, mp.body()]
+	.map(html.html2text).map(silly_escape)
+	.join("\n\n")
+}
+
+// replace <,>,& with a similar looking chars
+//
+// WHY: we pass <b> tag to sqlite snipped() fn & inject the results of
+// snipped() in a page as is, unescaped. This is an easy way to avoid
+// providing a custom tokenizer (that would threat &lt; as <) for the
+// `fts` table
+function silly_escape(s) {
+    if (s == null) return ''
+    return s.toString().replace(/[<>&]/g, ch => {
+        switch (ch) {
+        case '<': return '‹' // single left-pointing angle quotation mark
+        case '>': return '›' // single right-pointing ...
+        case '&': return 'ε' // Greek small letter epsilon
+        }
+    })
 }
