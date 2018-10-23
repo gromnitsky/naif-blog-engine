@@ -12,7 +12,7 @@ endif
 
 mk := $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
 all.src := $(filter-out $(wildcard $(src)/*.mk) $(templates) \
-  $(src)/.gitignore $(src)/node_modules, \
+  $(src)/.gitignore $(src)/node_modules/% $(src)/fts/%, \
   $(shell find $(src) ! -path "*/.git/*" ! -path '$(src)/$(out)/*' -type f))
 all.dest := $(patsubst $(src)/%, $(web)/%, $(all.src))
 html.dest := $(patsubst %.md, %.html, $(filter %.md, $(all.dest)))
@@ -101,7 +101,7 @@ browserify = browserify -d $< | terser -m --source-map content=inline,url=$(notd
 # print a diff between should-be files & a real situation
 .PHONY: check
 check: compile
-	@echo $(web)/nav.js.map "$(strip $(compile))" | tr ' ' \\n | sort > should
+	@echo $(web)/nav.js.map $(web)/fts.js.map "$(strip $(compile))" | tr ' ' \\n | sort > should
 	@find $(web) -type f | sort > real
 	@diff -u should real; c=$$?; rm should real; exit $$c
 
