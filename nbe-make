@@ -32,17 +32,11 @@ $(web)/%.html: $(src)/%.md $(src)/config.json $(src)/header.ejs $(src)/body.ejs 
 # dir, when the post/page is `XXXX/page.md`
 #
 # $(call post-deps,$*)
-post-deps = $(wildcard $(src)/$1/*)
+post-deps = $(patsubst $(src)/%, $(web)/%, $(wildcard $(src)/$1/*))
 
-# at 1st glance this looks stupid: why does it depend on .html output
-# in .md stead? but as a post, in turn, can depend on its included
-# files & the post recompiles into the html when its deps change, this
-# means that the .md file inself could be still older then its
-# included deps! hence index.json may become stale if it depends on
-# .md files.
-$(web)/index.json: $(html.dest)
+$(web)/index.json: $(filter %.md, $(all.src))
 	$(mkdir)
-	$(mk)/index $(filter %.md, $(all.src)) > $@
+	$(mk)/index $^ > $@
 
 $(static.dest): $(web)/%: $(src)/%
 	$(mkdir)
