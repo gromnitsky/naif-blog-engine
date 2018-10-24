@@ -67,27 +67,27 @@ class SearchDialog {
 
     print_results(r) {
 	if (!r.length) { this.result.innerText = 'No matches'; return }
-	let tbl = ['<table><thead><tr>',
-		   '<th>Date</th>',
-		   '<th>Subject</th>',
+	let tbl = ['<table style="table-layout: fixed; width: 100%">',
+		   '<thead><tr>',
+		   '<th style="width: 7em">Air Date</th>',
 		   '<th>Snippet</th>',
-		   '<th>Authors</th>',
-		   '<th>Tags</th>',
 		   '</tr></thead><tbody>']
 	let relto = web.relto()
 	tbl = tbl.concat(r.map( e => this.entry_format(e, relto)))
 	tbl.push('</tbody></table>')
-	this.result.innerHTML = tbl.join("\n")
+	this.result.innerHTML = tbl.join("\n") + `<p>Total: ${r.length}</p>`
     }
 
     entry_format(e, relto) {
-	return ['<tr><td>', [
+	return [
+	    '<tr><td style="vertical-align: top">',
 	    common.birthtime_ymd(e.file),
-	    `<a href='${common.e(common.link(e.file, relto))}'>${common.e(e.subject)}</a>`,
-	    e.snippet,
-	    common.metatags_inline(relto, 'authors', e.authors),
-	    common.metatags_inline(relto, 'tags', e.tags)
-	].join('</td><td>'),
-		'</td></tr>'].join('')
+	    '</td><td>', [
+		`<a href='${common.e(common.link(e.file, relto))}'>${common.e(e.subject)}</a>`,
+		e.snippet, // unescaped but must be already safe from the db
+		'A: ' + common.metatags_inline(relto, 'authors', e.authors),
+		'T: ' + common.metatags_inline(relto, 'tags', e.tags)
+	    ].join('<br>'),
+	    '</td></tr>'].join('')
     }
 }

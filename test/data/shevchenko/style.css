@@ -76,6 +76,8 @@ body > header .nbe__search {
   padding: var(--gutter) 0;
 }
 
+#nbe__search__dialog table td { word-wrap: break-word; }
+
 body > header > h1 { margin: 0.2em; }
 
 body > footer {
