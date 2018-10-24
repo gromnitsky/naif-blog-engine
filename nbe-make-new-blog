@@ -4,7 +4,6 @@ mk := $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
 out := new-blog.$(shell date +%Y-%m-%d.%s)
 author := $(if $(USER),$(USER),Simple Simon)
 post.dest := $(out)/$(shell date +%Y/%m/%d)/0001.md
-out.fts := $(out)/fts
 
 .PHONY: new
 new:
@@ -17,18 +16,9 @@ new:
 	sed -i'' 's/avatar.jpg/avatar.svg/' $(out)/footer.ejs
 	rm $(out)/avatar.jpg
 	mv $(out)/config $(out)/config.json
-	echo /fts >> $(out)/.gitignore
+	echo _fts >> $(out)/.gitignore
 	echo _out >> $(out)/.gitignore
-	cd $(out) && $(git) 'init blog'
-
-# fts
-	$(shell mkdir -p $(out.fts)/lib)
-	$(file > $(out.fts)/package.json,$(package.json))
-	echo node_modules > $(out.fts)/.gitignore
-	cd $(out.fts) && npm i --no-audit
-	cd $(out.fts) && $(git) 'init fts'
-
-git = git init && git add . && git commit -m
+	cd $(out) && git init && git add . && git commit -m 'init blog'
 
 define config :=
 {
@@ -66,18 +56,6 @@ The rhyme is as follows:
 > Show me first your penny;<br>
 > Says Simple Simon to the pieman,<br>
 > Indeed I have not any.
-endef
-
-define package.json :=
-{
-  "engines": { "node": "11.0.0" },
-  "scripts": { "start": "node nbe-fts-server db.sqlite3" },
-  "dependencies": {
-    "better-sqlite3": "^5.0.1",
-    "minimist": "^1.2.0",
-    "shell-quote": "^1.6.1"
-  }
-}
 endef
 
 define avatar.svg :=

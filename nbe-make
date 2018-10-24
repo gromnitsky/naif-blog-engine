@@ -140,8 +140,6 @@ fts.server.dest := $(patsubst $(mk)/%, $(fts)/%, $(fts.server.src))
 $(fts.db): $(out)/web/index.json
 	$(mkdir)
 	$(mk)/fts-create $< $@
-	git -C $(fts) init && git -C $(fts) add .
-	-git -C $(fts) commit -m upd
 
 $(fts)/%: $(mk)/%
 	$(mkdir)
@@ -149,5 +147,23 @@ $(fts)/%: $(mk)/%
 
 .PHONY: fts-create
 fts-create: $(fts.db) $(fts.server.dest)
+	$(file > $(fts)/package.json,$(fts.package.json))
+	echo node_modules > $(fts)/.gitignore
+	cd $(fts) && npm i --no-audit
+	git -C $(fts) init
+	git -C $(fts) add .
+	-git -C $(fts) commit -m upd
+
+define fts.package.json :=
+{
+  "engines": { "node": "11.0.0" },
+  "scripts": { "start": "node nbe-fts-server db.sqlite3" },
+  "dependencies": {
+    "better-sqlite3": "^5.0.1",
+    "minimist": "^1.2.0",
+    "shell-quote": "^1.6.1"
+  }
+}
+endef
 
 -include $(src)/local.mk
