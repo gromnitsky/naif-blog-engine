@@ -145,14 +145,16 @@ $(fts)/%: $(mk)/%
 	$(mkdir)
 	$(copy)
 
-.PHONY: fts-create
-fts-create: $(fts.db) $(fts.server.dest)
+$(fts)/.gitignore: $(fts.db) $(fts.server.dest)
 	$(file > $(fts)/package.json,$(fts.package.json))
-	echo node_modules > $(fts)/.gitignore
 	cd $(fts) && npm i --no-audit
+	echo node_modules > $@
 	git -C $(fts) init
 	git -C $(fts) add .
 	-git -C $(fts) commit -m upd
+
+.PHONY: fts-create
+fts-create: $(fts)/.gitignore
 
 define fts.package.json :=
 {
