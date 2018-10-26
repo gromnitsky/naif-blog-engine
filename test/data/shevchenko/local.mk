@@ -16,7 +16,7 @@ help += $(help.local)
 
 # edit this
 .PHONY: fts-deploy
-fts-deploy: fts-kill fts-create
+fts-deploy: fts-kill fts-create check
 	$(fts.server) &
 
 # edit this
@@ -25,3 +25,10 @@ fts-kill:
 	-pkill -f '$(fts.server)'
 
 fts.server := node $(fts)/nbe-fts-server $(fts.db)
+
+define help.local :=
+
+fts-deploy	run `$(fts.server)`
+fts-kill	kill the FTS server process
+endef
+help += $(help.local)
