@@ -1,6 +1,14 @@
 # naif-blog-engine
 
-A Make-controlled static blog generator.
+A Make-controlled static blog generator w/ FTS support; the offspring
+of the NIH syndrome.
+
+Requires node & sqlite.
+
+Why? I've got tired of the combination of
+[jekyllmk](https://github.com/gromnitsky/jekyllmk) +
+[jekyllmk-fts](https://github.com/gromnitsky/jekyllmk-fts). Both have
+become unnesesary complex.
 
 ## Install
 
@@ -35,6 +43,35 @@ To write a new post:
 For the help:
 
     $ nbe-make help
+
+## FTS
+
+By default, the FTS is off. To enable, edit `config.json` file that is
+located in the *generated* blog dir:
+
+~~~
+{
+    [...],
+    "fts": "http://localhost:3000"
+}
+~~~
+
+To generate the db:
+
+    $ nbe-make fts-create
+
+This creates `_fts` dir that contains a sep repo that includes the db
+& the tiny http server to serve search queries. This repo can be
+deployed, for example, to Heroku, w/o any modifications or it you can
+test it locally via running
+
+    $ nbe-make # this recompiles the blog, for config.json was updated
+    $ cd _fts
+    $ nbe-fts-server db.sqlite3
+
+or just via
+
+    $ nbe-make fts-deploy
 
 ## License
 
