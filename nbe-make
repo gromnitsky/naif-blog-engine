@@ -68,16 +68,21 @@ $(web)/rss.xml: $(web)/index.json $(src)/config.json
 
 compile += $(web)/rss.xml
 
-# also makes $@.map source-map file
-$(web)/nav.js: $(mk)/nav.js $(mk)/lib/common.js $(mk)/lib/web.js
+# JS for the browser
+$(web)/%.js: $(mk)/%.js $(mk)/lib/common.js $(mk)/lib/web.js
 	$(mkdir)
 	$(browserify)
 
-$(web)/fts.js: $(mk)/fts.js $(mk)/lib/web.js
-	$(mkdir)
-	$(browserify)
+js.dest := $(web)/nav.js $(web)/fts.js
+js.dest.map := $(addsuffix .map,$(js.dest))
+vendor.src :=
+vendor.dest := $(addprefix $(web)/vendor/,$(vendor.src))
 
-compile += $(web)/nav.js $(web)/fts.js
+$(web)/vendor/%: $(mk)/node_modules/%
+	$(mkdir)
+	$(copy)
+
+compile += $(js.dest) $(vendor.dest)
 
 # a sitemap for the google console
 $(web)/sitemap.txt: $(web)/index.json
@@ -92,6 +97,7 @@ copy = cp $< $@
 mkdir = @mkdir -p $(dir $@)
 shellquote = '$(subst ','\'',$(1))'
 #'
+# also makes $@.map source-map file
 browserify = browserify -d $< | terser -m --source-map content=inline,url=$(notdir $@).map -o $@
 
 .DELETE_ON_ERROR:
@@ -101,7 +107,7 @@ browserify = browserify -d $< | terser -m --source-map content=inline,url=$(notd
 # print a diff between should-be files & a real situation
 .PHONY: check
 check: compile
-	@echo $(web)/nav.js.map $(web)/fts.js.map "$(strip $(compile))" | tr ' ' \\n | sort > should
+	@echo $(js.dest.map) "$(strip $(compile))" | tr ' ' \\n | sort > should
 	@find $(web) -type f | sort > real
 	@diff -u should real; c=$$?; rm should real; exit $$c
 
