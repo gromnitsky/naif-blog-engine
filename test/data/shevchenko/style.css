@@ -93,7 +93,6 @@ hr {
 
 body > main > nav > img {
   border-radius: 6px;
-  max-width: 95%;
   margin: var(--gutter) 0;
 }
 
@@ -120,22 +119,27 @@ body > main > section {
   flex: 1;
   margin-bottom: var(--gutter);
   max-width: var(--post-max-width);
+  padding-left: var(--gutter);
+  word-wrap: break-word;
 }
 
 body > main > nav {
   order: 1;
   width: var(--nav-max-width);
-  margin-right: var(--gutter);
+  padding-right: var(--gutter);
   border-right: 1px dotted var(--body-fg);
 }
 
 @media (max-width: 949px) {
   /* too narrow to support 2 columns */
   body {
+    padding: 0 calc(var(--gutter)/2);
     max-width: var(--post-max-width);
   }
 
   body > main { flex-flow: column; }
+
+  body > main > section { padding-left: 0; }
 
   body > main > section,
   body > main > nav {
@@ -146,6 +150,7 @@ body > main > nav {
   body > main > nav {
     margin-top: var(--gutter);
     border-top: 1px dotted var(--body-fg);
+    padding-right: 0;
     border-right: 0;
   }
 
