@@ -27,7 +27,6 @@ function convert(file, config, header, body, footer) {
 	metatags_inline: common.metatags_inline,
 
 	// helpers
-	is_post: common.is_post,
 	birthtime_ymd: common.birthtime_ymd,
 	link: common.link,
 	path,
