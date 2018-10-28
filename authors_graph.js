@@ -10,25 +10,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function plot(index) {
     if (author() === 'anonymous') return
-    let plot_data = points(common.index_group_by(index, 'authors')[author()])
 
-    let node = document.querySelector('#nbe__authors__graph')
-    if (!node) return
+    let id = '#nbe__authors__graph'
+    let node = web.$(id)[0]
     node.className = 'ct-double-octave'
-
-    let data = { series: [ plot_data ] }
-    let ticks = plot_data.map( v => v.x)
-    let yyyy_mm = d => `${d.getFullYear()}-${d.getMonth()+1}`
     let tooltip = new Tooltip('#nbe__authors__graph__tooltip')
+
+    let plot_data = points(common.index_group_by(index, 'authors')[author()])
+    let data = { series: [ plot_data ] }
+
+    let ticks = (all, max_allowed) => {
+	if (all.length <= max_allowed) return all
+	return all.filter((v,idx) => idx % Math.ceil(all.length/max_allowed) === 0)
+    }
+    let yyyy_mm = d => `${d.getFullYear()}-${d.getMonth()+1}`
+
     new Chartist.Line(node, data, {
 	chartPadding: { bottom: 30 },
 	axisX: {
 	    type: Chartist.FixedScaleAxis,
-	    ticks: [ticks[0], ticks[ticks.length-1]],
-	    labelInterpolationFnc: function(n) {
-	    	let d = new Date(n)
-	    	return `${d.getFullYear()}-${d.getMonth()+1}`
-	    },
+	    ticks: ticks(plot_data.map( v => v.x), 20),
+	    labelInterpolationFnc: n => yyyy_mm(new Date(n))
 	}
     }).on('draw', function(data) {
 	if (data.type === 'point') tooltip.register(data.element._node, `${yyyy_mm(new Date(data.value.x))} (${data.value.y})`)
@@ -36,10 +38,7 @@ function plot(index) {
 }
 
 class Tooltip {
-    constructor(id) {
-	this.node = document.querySelector(id)
-	if (!this.node) throw new Error(`no node ${id}`)
-    }
+    constructor(id) { this.node = web.$(id)[0] }
     show(evt, text) {
 	this.node.innerHTML = common.e(text)
 	this.node.style.display = 'block'
