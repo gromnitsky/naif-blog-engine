@@ -1,8 +1,8 @@
 /* global Chartist */
 'use strict';
 
-let common = require('./lib/common')
-let web = require('./lib/web')
+let common = require('common')
+let web = require('web')
 
 document.addEventListener('DOMContentLoaded', () => {
     web.getindex().then(plot)

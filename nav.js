@@ -1,7 +1,7 @@
 'use strict';
 
-let common = require('./lib/common')
-let web = require('./lib/web')
+let common = require('common')
+let web = require('web')
 
 document.addEventListener('DOMContentLoaded', function() {
     web.getindex().then(widgets).then(mount)

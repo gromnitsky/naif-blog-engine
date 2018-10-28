@@ -1,7 +1,7 @@
 'use strict';
 
-let web = require('./lib/web')
-let common = require('./lib/common')
+let web = require('web')
+let common = require('common')
 
 document.addEventListener('DOMContentLoaded', async function() {
     let btn = document.querySelector('.nbe__search')

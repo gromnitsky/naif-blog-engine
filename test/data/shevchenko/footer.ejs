@@ -28,8 +28,12 @@
   </p>
 </footer>
 
+<script src="<%= path.join(root, 'lib.js') %>"></script>
 <script src="<%= path.join(root, 'nav.js') %>"></script>
 <% if (config.fts) { %>
 <script src="<%= path.join(root, 'fts.js') %>"></script>
 <% } %>
-
+<% if (type === 'metatags') { %>
+<script src="<%= path.join(root, 'vendor/chartist/dist/chartist.min.js') %>"></script>
+<script src="<%= path.join(root, 'authors_graph.js') %>"></script>
+<% } %>
