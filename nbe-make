@@ -73,9 +73,9 @@ $(web)/%.js: $(mk)/%.js $(mk)/lib/common.js $(mk)/lib/web.js
 	$(mkdir)
 	$(browserify)
 
-js.dest := $(web)/nav.js $(web)/fts.js
+js.dest := $(web)/nav.js $(web)/fts.js $(web)/authors_graph.js
 js.dest.map := $(addsuffix .map,$(js.dest))
-vendor.src :=
+vendor.src := chartist/dist/chartist.css chartist/dist/chartist.min.js
 vendor.dest := $(addprefix $(web)/vendor/,$(vendor.src))
 
 $(web)/vendor/%: $(mk)/node_modules/%

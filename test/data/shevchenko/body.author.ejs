@@ -1,7 +1,11 @@
 <section>
-<article>
+<article data-author="<%= subject %>">
 
   <h2><%= subject %></h2>
+
+  <div id="nbe__authors__graph"></div>
+  <div id="nbe__authors__graph__tooltip"
+       style="position: absolute; display: none;"></div>
 
   <p>Total: <%= group_by_author[subject].length %></p>
 
@@ -25,3 +29,6 @@
 
 </article>
 </section>
+
+<script src="<%= path.join(root, 'vendor/chartist/dist/chartist.min.js') %>"></script>
+<script src="<%= path.join(root, 'authors_graph.js') %>"></script>

@@ -55,6 +55,25 @@ pre {
 
 summary { word-wrap: break-word; }
 
+body > main > nav > img {
+  border-radius: 6px;
+  margin: var(--gutter) 0;
+}
+
+nav.prevnext {
+  display: flex;
+  font-size: xx-large;
+  justify-content: space-between;
+}
+
+nav.prevnext a {
+  display: block;
+  border: 1px solid var(--faint-gray);
+  border-radius: 6px;
+  padding: 0 calc(var(--gutter) * 4);
+  margin-top: var(--gutter);
+}
+
 body > header {
   border-bottom: 1px dotted var(--body-fg);
   display: flex;
@@ -91,25 +110,6 @@ hr {
   border-bottom: 1px dotted gray;
 }
 
-body > main > nav > img {
-  border-radius: 6px;
-  margin: var(--gutter) 0;
-}
-
-nav.prevnext {
-  display: flex;
-  font-size: xx-large;
-  justify-content: space-between;
-}
-
-nav.prevnext a {
-  display: block;
-  border: 1px solid var(--faint-gray);
-  border-radius: 6px;
-  padding: 0 calc(var(--gutter)*4);
-  margin-top: var(--gutter);
-}
-
 /* the holy grail */
 
 body > main { display: flex; }
@@ -133,7 +133,7 @@ body > main > nav {
 @media (max-width: 949px) {
   /* too narrow to support 2 columns */
   body {
-    padding: 0 calc(var(--gutter)/2);
+    padding: 0 calc(var(--gutter) / 2);
     max-width: var(--post-max-width);
   }
 
@@ -162,4 +162,22 @@ body > main > nav {
   body > main > nav,
   body > header,
   body > footer { display: none; }
+}
+
+/* Chartist */
+.ct-label.ct-label.ct-horizontal {
+  width: 7rem !important;
+  justify-content: flex-end !important;
+  transform-origin: 100% 45%;
+  transform: translate(-100%) rotate(-60deg);
+}
+
+.ct-label.ct-label {
+  color: var(--body-fg);
+}
+
+#nbe__authors__graph__tooltip {
+  background: cornsilk;
+  border: 1px solid var(--body-fg);
+  padding: 5px;
 }

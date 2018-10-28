@@ -2,6 +2,7 @@
     "dependencies": {
         "better-sqlite3": "^5.0.1",
         "blueimp-md5": "^2.10.0",
+        "chartist": "^0.11.0",
         "ejs": "^2.6.1",
         "ent": "^2.2.0",
         "front-matter": "^2.3.0",

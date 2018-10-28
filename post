@@ -21,6 +21,7 @@ function convert(file, config, header, body, footer) {
     let view = {
 	file,
 	config,
+	type: common.detect_input_type(file),
 
 	// complex widgets
 	metatags_inline: common.metatags_inline,

@@ -17,6 +17,9 @@
   details details { margin-left: 1em; }
 </style>
 <link rel="stylesheet" href="<%= path.join(root, 'style.css') %>">
+<% if (type === 'metatags') { %>
+<link rel="stylesheet" href="<%= path.join(root, 'vendor/chartist/dist/chartist.css') %>">
+<% } %>
 
 <header data-root="<%= root %>">
   <h1><a href="<%= root %>"><%= config.title %></a></h1>

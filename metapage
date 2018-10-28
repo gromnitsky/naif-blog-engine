@@ -24,6 +24,7 @@ function convert(file, index, config, header, body, footer) {
 	file,
 	index,
 	config,
+	type: common.detect_input_type(file),
 
 	// the same `index`, but from a different perspective
 	group_by_author: common.index_group_by(index, 'authors'),
@@ -42,7 +43,7 @@ function convert(file, index, config, header, body, footer) {
     let relto = file
     view.root = common.rootdir(relto)
 
-    switch (detect_input_type(file)) {
+    switch (view.type) {
     case 'post':
 	throw new Error(`${file} isn't supported`)
     case 'home':
@@ -64,13 +65,6 @@ function convert(file, index, config, header, body, footer) {
     footer = ejs.render(footer, view)
 
     return [header, body, footer].join("\n")
-}
-
-function detect_input_type(file) {
-    if (common.is_post(file)) return 'post'
-    if (file === 'home') return 'home'
-    if (/^(author|tag)$/.test(path.dirname(file))) return 'metatags'
-    return 'page'
 }
 
 function metatags(group, target) {
