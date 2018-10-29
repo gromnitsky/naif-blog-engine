@@ -164,17 +164,16 @@ body > main > nav {
   body > footer { display: none; }
 }
 
+
 /* Chartist */
-.ct-label.ct-label.ct-horizontal {
-  width: 7rem !important;
-  justify-content: flex-end !important;
+#nbe__authors__graph .ct-label.ct-horizontal.ct-end {
+  width: 6em !important;
+  justify-content: flex-end;
   transform-origin: 100% 45%;
   transform: translate(-100%) rotate(-60deg);
 }
 
-.ct-label.ct-label {
-  color: var(--body-fg);
-}
+#nbe__authors__graph .ct-label {  color: var(--body-fg); }
 
 #nbe__authors__graph__tooltip {
   background: cornsilk;
