@@ -46,13 +46,14 @@ For the help:
 
 ## FTS
 
-By default, the FTS is off. To enable, edit `config.json` file that is
-located in the *generated* blog dir:
+By default, the FTS module is off. To enable, uncomment the
+"nfts.server" key in `config.json` file that is located in the
+*generated* blog dir:
 
 ~~~
-{
-    [...],
-    "fts": "http://localhost:3000"
+"nfts": {
+    [...]
+    "server": "http://localhost:3000"
 }
 ~~~
 
@@ -66,8 +67,7 @@ deployed, for example, to Heroku, w/o any modifications or it you can
 test it locally via running
 
     $ nbe-make # this recompiles the blog, for config.json was updated
-    $ cd _fts
-    $ nbe-fts-server db.sqlite3
+    $ _fts/nfts-server _fts/db.sqlite3
 
 or just via
 

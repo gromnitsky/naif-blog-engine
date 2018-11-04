@@ -6,6 +6,6 @@
         "ent": "^2.2.0",
         "front-matter": "^2.3.0",
         "marked": "^0.5.1",
-        "nfts": "file:../../example/node/nfts"
+        "nfts": "^0.0.1"
     }
 }
