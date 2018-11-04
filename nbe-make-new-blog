@@ -26,6 +26,11 @@ define config :=
     "rss": {
         "baseUrl": "http://example.com/blog/",
         "author": "$(author)"
+    },
+    "nfts": {
+        "parent_container": "body > main > section",
+        "dialog_toggle_btn": ".nbe__search",
+        "//server": "http://localhost:3000"
     }
 }
 endef

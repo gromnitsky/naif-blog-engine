@@ -90,12 +90,12 @@ body > header .nbe__search {
 
 .nbe__search > img { height: inherit; }
 
-#nbe__search__dialog {
+#nfts__dialog {
   border-bottom: 1px dotted var(--body-fg);
   padding: var(--gutter) 0;
 }
 
-#nbe__search__dialog table td { word-wrap: break-word; }
+#nfts__dialog > div { margin-top: 1em; }
 
 body > header > h1 { margin: 0.2em; }
 

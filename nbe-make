@@ -14,6 +14,7 @@ endif
 mk := $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
 all.src := $(filter-out $(wildcard $(src)/*.mk) $(templates) $(src)/.gitignore,\
   $(shell find $(src) ! -path "*/.git/*" ! -path '$(src)/$(out)/*' ! -path '$(fts)/*' -type f))
+src.md := $(filter %.md, $(all.src))
 all.dest := $(patsubst $(src)/%, $(web)/%, $(all.src))
 html.dest := $(patsubst %.md, %.html, $(filter %.md, $(all.dest)))
 static.dest := $(filter-out %.md, $(all.dest))
@@ -34,7 +35,7 @@ $(web)/%.html: $(src)/%.md $(src)/config.json $(src)/header.ejs $(src)/body.ejs 
 # $(call post-deps,$*)
 post-deps = $(patsubst $(src)/%, $(web)/%, $(wildcard $(src)/$1/*))
 
-$(web)/index.json: $(filter %.md, $(all.src))
+$(web)/index.json: $(src.md)
 	$(mkdir)
 	$(mk)/index $^ > $@
 
@@ -144,14 +145,14 @@ help:; $(info $(help))@:
 
 
 fts.db := $(fts)/db.sqlite3
-fts.server.src := $(mk)/nbe-fts-server $(mk)/lib/fts.js
-fts.server.dest := $(patsubst $(mk)/%, $(fts)/%, $(fts.server.src))
+fts.server.src := $(mk)/node_modules/nfts/nfts-server $(mk)/node_modules/nfts/lib/finder.js
+fts.server.dest := $(patsubst $(mk)/node_modules/nfts/%, $(fts)/%, $(fts.server.src))
 
-$(fts.db): $(out)/web/index.json
+$(fts.db): $(src.md)
 	$(mkdir)
-	$(mk)/fts-create $< $@
+	$(mk)/node_modules/nfts/nfts-create -o $@ $^
 
-$(fts)/%: $(mk)/%
+$(fts)/%: $(mk)/node_modules/nfts/%
 	$(mkdir)
 	$(copy)
 
@@ -169,7 +170,7 @@ fts-create: $(fts)/.gitignore
 define fts.package.json :=
 {
   "engines": { "node": "11.0.0" },
-  "scripts": { "start": "node nbe-fts-server db.sqlite3" },
+  "scripts": { "start": "node nfts-server db.sqlite3" },
   "dependencies": {
     "better-sqlite3": "^5.0.1",
     "minimist": "^1.2.0",

@@ -23,7 +23,7 @@
 
 <header data-root="<%= root %>">
   <h1><a href="<%= root %>"><%= config.title %></a></h1>
-  <% if (config.fts) { %>
+  <% if (config.nfts.server) { %>
   <a style="visibility: hidden" class="nbe__search" href="#"><img src="<%= path.join(root, 'fts.svg') %>" alt="Search"></a>
   <% } %>
 </header>

@@ -24,7 +24,7 @@ fts-deploy: fts-kill fts-create check
 fts-kill:
 	-pkill -f '$(fts.server)'
 
-fts.server := node $(fts)/nbe-fts-server $(fts.db)
+fts.server := node $(fts)/nfts-server $(fts.db)
 
 define help.local :=
 

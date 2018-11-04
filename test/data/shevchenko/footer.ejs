@@ -30,7 +30,7 @@
 
 <script src="<%= path.join(root, 'lib.js') %>"></script>
 <script src="<%= path.join(root, 'nav.js') %>"></script>
-<% if (config.fts) { %>
+<% if (config.nfts.server) { %>
 <script src="<%= path.join(root, 'fts.js') %>"></script>
 <% } %>
 <% if (type === 'metatags') { %>

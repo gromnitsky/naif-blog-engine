@@ -4,5 +4,9 @@
         "baseUrl": "http://example.com/blog/",
         "author": "Тарас Шевченко"
     },
-    "fts": "http://localhost:3000/"
+    "nfts": {
+        "parent_container": "body > main > section",
+        "dialog_toggle_btn": ".nbe__search",
+        "server": "http://localhost:3000"
+    }
 }
