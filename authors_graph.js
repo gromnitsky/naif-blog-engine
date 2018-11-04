@@ -12,6 +12,7 @@ function plot(index) {
     if (author() === 'anonymous') return
 
     let node = web.$('#nbe__authors__graph')[0]
+    node.classList.add('ct-double-octave')
     let tooltip = new Tooltip('#nbe__authors__graph__tooltip')
 
     let plot_data = points(common.index_group_by(index, 'authors')[author()])
