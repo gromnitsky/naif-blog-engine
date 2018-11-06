@@ -2,32 +2,65 @@
 
 src := .
 out := _out
+fts := _fts
 web := $(out)/web
-fts := $(src)/_fts
 
-templates := $(addprefix $(src)/,body.author.ejs body.ejs body.home.ejs body.tag.ejs footer.ejs header.ejs)
-req := $(templates) $(src)/config.json
-ifneq ($(wildcard $(req)), $(req))
-$(error The curren dir ($(CURDIR)) does not look like a naif-blog-engine material. Run nbe-make-new-blog to create one)
-endif
+# Startup check #1
+$(if $(wildcard $(src)/config.json),,$(error No config.json in the $(realpath $(src))))
 
 mk := $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
-all.src := $(filter-out $(wildcard $(src)/*.mk) $(templates) $(src)/.gitignore,\
-  $(shell find $(src) ! -path "*/.git/*" ! -path '$(src)/$(out)/*' ! -path '$(fts)/*' -type f))
+theme := $(or $(shell json -f $(src)/config.json theme),default)
+
+# usage: $(call theme-get,file.ejs)
+theme-get = $(firstword $(foreach loc,\
+  $(src)/themes/$(theme) $(mk)/themes/$(theme), $(wildcard $(loc)/$1)))
+
+# Startup check #2
+templates := body.author.ejs body.ejs body.home.ejs body.tag.ejs footer.ejs header.ejs
+$(foreach file,$(templates),$(if $(call theme-get,$(file)),,$(error Theme `$(theme)` is invalid: $(file) is missing)))
+
+
+
+# all non-esj files in the current theme
+theme.src := $(foreach file,$(filter-out $(templates), \
+    $(sort $(notdir \
+      $(foreach loc, $(src)/themes/$(theme) $(mk)/themes/$(theme), \
+        $(shell find $(loc) -type f 2>/dev/null))))), \
+  $(call theme-get,$(file)))
+
+theme.dest := $(filter $(web)/%, \
+  $(foreach loc, $(src)/themes/$(theme) $(mk)/themes/$(theme), \
+    $(patsubst $(loc)/%, $(web)/%, $(theme.src))))
+
+$(web)/%: $(src)/themes/$(theme)/%
+	$(mkdir)
+	$(copy)
+
+$(web)/%: $(mk)/themes/$(theme)/%
+	$(mkdir)
+	$(copy)
+
+.PHONY: compile
+compile:
+compile := $(theme.dest)
+
+
+
+all.src := $(filter-out $(wildcard $(src)/*.mk) $(src)/.gitignore,\
+  $(shell find $(src) ! -path "*/.git/*" ! -path '$(src)/$(out)/*' \
+               ! -path '$(src)/$(fts)/*' ! -path '$(src)/themes/*' -type f))
 src.md := $(filter %.md, $(all.src))
 all.dest := $(patsubst $(src)/%, $(web)/%, $(all.src))
 html.dest := $(patsubst %.md, %.html, $(filter %.md, $(all.dest)))
 static.dest := $(filter-out %.md, $(all.dest))
 
-.PHONY: compile
-compile:
-compile := $(html.dest) $(static.dest)
+compile += $(html.dest) $(static.dest)
 
 .SECONDEXPANSION:
 
-$(web)/%.html: $(src)/%.md $(src)/config.json $(src)/header.ejs $(src)/body.ejs $(src)/footer.ejs $$(call post-deps,$$*)
+$(web)/%.html: $(src)/%.md $(src)/config.json $(call theme-get,header.ejs) $(call theme-get,body.ejs) $(call theme-get,footer.ejs) $$(call post-deps,$$*)
 	$(mkdir)
-	$(mk)/post $< $(src)/config.json $(src)/header.ejs $(src)/body.ejs $(src)/footer.ejs > $@
+	$(mk)/post $< $(src)/config.json $(call theme-get,header.ejs) $(call theme-get,body.ejs) $(call theme-get,footer.ejs) > $@
 
 # grab the deps for a post/page IF the deps are in `XXXX/page/`
 # dir, when the post/page is `XXXX/page.md`
@@ -49,15 +82,15 @@ $(out)/metatargets.mk: $(web)/index.json
 
 include $(out)/metatargets.mk
 
-$(web)/a/%.html: $(web)/index.json $(src)/config.json $(src)/header.ejs $(src)/body.author.ejs $(src)/footer.ejs
+$(web)/a/%.html: $(web)/index.json $(src)/config.json $(call theme-get,header.ejs) $(call theme-get,body.author.ejs) $(call theme-get,footer.ejs)
 	$(mkdir)
 	$(mk)/metapage author/$* $^ > $@
 
-$(web)/t/%.html: $(web)/index.json $(src)/config.json $(src)/header.ejs $(src)/body.tag.ejs $(src)/footer.ejs
+$(web)/t/%.html: $(web)/index.json $(src)/config.json $(call theme-get,header.ejs) $(call theme-get,body.tag.ejs) $(call theme-get,footer.ejs)
 	$(mkdir)
 	$(mk)/metapage tag/$* $^ > $@
 
-$(web)/index.html: $(web)/index.json $(src)/config.json $(src)/header.ejs $(src)/body.home.ejs $(src)/footer.ejs
+$(web)/index.html: $(web)/index.json $(src)/config.json $(call theme-get,header.ejs) $(call theme-get,body.home.ejs) $(call theme-get,footer.ejs)
 	$(mkdir)
 	$(mk)/metapage home $^ > $@
 
