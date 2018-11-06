@@ -149,15 +149,13 @@ check: compile
 	@find $(web) -type f | sort > real
 	@diff -u should real; c=$$?; rm should real; exit $$c
 
-new.date := $(shell date +%Y/%m/%d)
-new.post := $(src)/$(shell mktemp -u $(new.date)/XXXXXX.md)
-new.author := $(shell json < $(src)/config.json rss.author)
+new.post := $(src)/$(shell mktemp -u `date +%Y/%m/%d`/XXXXXX.md)
+new.author = $(shell json < $(src)/config.json rss.author)
 .PHONY: new
 new:
 	@mkdir -p $(dir $(new.post))
 	@printf -- '---\nsubject: A New Post\nauthors: %s\ntags: \n---\n\nHi' \
 		$(call shellquote,$(new.author)) > $(new.post)
-	@echo TEST: nbe-make $(patsubst %.md, %.html, $(patsubst $(src)/%, $(web)/%, $(new.post)))
 	$$EDITOR $(new.post) &
 
 define help :=
@@ -202,7 +200,7 @@ fts-create: $(fts)/.gitignore
 
 define fts.package.json :=
 {
-  "engines": { "node": "11.0.0" },
+  "engines": { "node": "11.1.0" },
   "scripts": { "start": "node nfts-server db.sqlite3" },
   "dependencies": {
     "better-sqlite3": "^5.0.1",
