@@ -9,7 +9,7 @@ web := $(out)/web
 $(if $(wildcard $(src)/config.json),,$(error No config.json in the $(realpath $(src))))
 
 mk := $(dir $(realpath $(lastword $(MAKEFILE_LIST))))
-theme := $(or $(shell json -f $(src)/config.json theme),default)
+theme := $(or $(shell json -f $(src)/config.json theme.name),default)
 
 # usage: $(call theme-get,file.ejs)
 theme-get = $(firstword $(foreach loc,\

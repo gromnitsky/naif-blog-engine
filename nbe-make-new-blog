@@ -18,7 +18,10 @@ new:
 
 define config :=
 {
-    "theme": "default",
+    "theme": {
+         "name": "default",
+         "opt": {}
+     },
     "title": "$(author)'s blog",
     "rss": {
         "baseUrl": "http://example.com/blog/",

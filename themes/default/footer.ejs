@@ -1,5 +1,5 @@
   <nav>
-    <img src='<%= path.join(root, 'avatar.svg') %>' alt='avatar'>
+    <img src='<%= path.join(root, get(config, 'theme.opt.avatar', 'avatar.svg')) %>' alt='avatar'>
 
     <p>
       <a href="<%= path.join(root, 'rss.xml') %>"><img src='<%= path.join(root, 'rss.svg') %>' style="height: 1em" alt="">
@@ -21,10 +21,8 @@
 </main>
 
 <footer>
-  <!-- a deep quote -->
   <p>
-    This is no time to bite the bullet with our synchronised incremental
-    paradigm shifts.
+    <%= get(config, 'theme.opt.quote', 'This is no time to bite the bullet with our synchronised incremental paradigm shifts.') %>
   </p>
 </footer>
 

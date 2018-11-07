@@ -4,6 +4,7 @@ let fs = require('fs')
 let path = require('path')
 let ejs = require('ejs')
 let md5 = require('blueimp-md5')
+let get = require('lodash.get')
 let lib = require('./lib/cli')
 let common = require('./lib/common')
 
@@ -37,6 +38,7 @@ function convert(file, index, config, header, body, footer) {
 	birthtime_ymd: common.birthtime_ymd,
 	link: common.link,
 	path,
+	get,
     }
 
     let relto = file

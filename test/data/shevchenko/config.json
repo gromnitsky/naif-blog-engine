@@ -1,4 +1,9 @@
 {
+    "theme": {
+        "opt": {
+            "avatar": "avatar.jpg"
+        }
+    },
     "title": "Щоденник Тараса Шевченко",
     "rss": {
         "baseUrl": "http://example.com/blog/",

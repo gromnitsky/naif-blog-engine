@@ -3,6 +3,7 @@
 let fs = require('fs')
 let path = require('path')
 let ejs = require('ejs')
+let get = require('lodash.get')
 let lib = require('./lib/cli')
 let common = require('./lib/common')
 
@@ -29,8 +30,9 @@ function convert(file, config, header, body, footer) {
 	// helpers
 	birthtime_ymd: common.birthtime_ymd,
 	link: common.link,
-	path,
 	root: common.rootdir(file),
+	path,
+	get,
     }
 
     let markdown_parse = () => {
