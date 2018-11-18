@@ -33,6 +33,7 @@ function convert(file, index, config, header, body, footer) {
 
 	// complex widgets
 	metatags_inline: common.metatags_inline,
+	date_human: common.date_human,
 
 	// helpers
 	birthtime_ymd: common.birthtime_ymd,
