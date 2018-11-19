@@ -7,8 +7,7 @@
   <h2><a href="<%= link(post.file, root) %>"><%= post.subject %></a></h2>
   <p>
     Air Date: <time><%= birthtime_ymd(post.file) %></time><br>
-    Latest update: <time datetime="<%= new Date(post.mtime).toISOString() %>">
-      <%= date_human(post.mtime) %></time>
+    Latest update: <%- date_human(post.mtime) %>
   </p>
 
   <%- body(post.file) %>

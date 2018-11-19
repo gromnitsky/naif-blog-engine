@@ -8,8 +8,7 @@
 
   <h2><%= subject %></h2>
 
-  <p>Latest update: <time datetime="<%= new Date(mtime).toISOString() %>">
-      <%= date_human(mtime) %></time></p>
+  <p>Latest update: <%- date_human(mtime) %></p>
 
   <%- body %>
 
