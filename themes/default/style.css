@@ -7,14 +7,26 @@
   --nav-max-width: 240px;
 }
 
+@media (min-width: 980px) {
+  body {
+    max-width: var(--site-max-width);
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
 body {
-  max-width: var(--site-max-width);
-  margin: 0 auto;
   color: var(--body-fg);
   font-family: Georgia, serif;
+  margin-top: 0;
 }
 
 a { text-decoration: none; }
+
+blockquote {
+  margin-left: 1em;
+  margin-right: 1em;
+}
 
 /* a diff font for headers */
 h1,
@@ -132,11 +144,6 @@ body > main > nav {
 
 @media (max-width: 949px) {
   /* too narrow to support 2 columns */
-  body {
-    padding: 0 calc(var(--gutter) / 2);
-    max-width: var(--post-max-width);
-  }
-
   body > main { flex-flow: column; }
 
   body > main > section { padding-left: 0; }
