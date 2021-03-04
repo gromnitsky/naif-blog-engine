@@ -176,20 +176,16 @@ help:; $(info $(help))@:
 
 
 fts.db := $(fts)/db.sqlite3
-fts.server.src := $(mk)/node_modules/nfts/nfts-server $(mk)/node_modules/nfts/lib/finder.js
-fts.server.dest := $(patsubst $(mk)/node_modules/nfts/%, $(fts)/%, $(fts.server.src))
 
 $(fts.db): $(src.md)
 	$(mkdir)
 	$(mk)/node_modules/nfts/nfts-create -o $@ $^
 
-$(fts)/%: $(mk)/node_modules/nfts/%
-	$(mkdir)
-	$(copy)
-
-$(fts)/.gitignore: $(fts.db) $(fts.server.dest)
+$(fts)/.gitignore: $(fts.db)
 	$(file > $(fts)/package.json,$(fts.package.json))
-	cd $(fts) && npm i --no-audit
+	mkdir -p $(fts)/lib
+	cp $(mk)/node_modules/nfts/nfts-server $(fts)
+	cp $(mk)/node_modules/nfts/lib/finder.js $(fts)/lib
 	echo node_modules > $@
 	git -C $(fts) init
 	git -C $(fts) add .
@@ -200,12 +196,12 @@ fts-create: $(fts)/.gitignore
 
 define fts.package.json :=
 {
-  "engines": { "node": "11.1.0" },
+  "engines": { "node": "15.10.0" },
   "scripts": { "start": "node nfts-server db.sqlite3" },
   "dependencies": {
-    "better-sqlite3": "^5.0.1",
-    "minimist": "^1.2.0",
-    "shell-quote": "^1.6.1"
+    "better-sqlite3": "^7.1.2",
+    "minimist": "^1.2.5",
+    "shell-quote": "^1.7.2"
   }
 }
 endef
