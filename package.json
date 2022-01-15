@@ -6,7 +6,7 @@
         "ent": "^2.2.0",
         "front-matter": "^4.0.2",
         "lodash.get": "^4.4.2",
-        "marked": "^2.0.1",
+        "marked": "^4.0.10",
         "nfts": "0.0.4"
     }
 }
