@@ -2,11 +2,11 @@
     "dependencies": {
         "blueimp-md5": "^2.10.0",
         "chartist": "^0.11.0",
-        "ejs": "^2.6.1",
+        "ejs": "^3.1.8",
         "ent": "^2.2.0",
         "front-matter": "^4.0.2",
         "lodash.get": "^4.4.2",
-        "marked": "^2.0.1",
-        "nfts": "0.0.4"
+        "marked": "^4.0.19",
+        "nfts": "0.0.5"
     }
 }

@@ -5,10 +5,8 @@ of the NIH syndrome.
 
 Requires node & sqlite.
 
-Why? I've got tired of the combination of
-[jekyllmk](https://github.com/gromnitsky/jekyllmk) +
-[jekyllmk-fts](https://github.com/gromnitsky/jekyllmk-fts). Both have
-become unnesesary complex.
+A live example of the default theme:
+http://gromnitsky.users.sourceforge.net/blog/
 
 ## Install
 
