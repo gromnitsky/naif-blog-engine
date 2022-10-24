@@ -122,6 +122,8 @@ hr {
   border-bottom: 1px dotted gray;
 }
 
+audio { width: 100%; }
+
 /* the holy grail */
 
 body > main { display: flex; }

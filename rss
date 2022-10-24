@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 
+let path = require('path')
 let ejs = require('ejs')
+
 let lib = require('./lib/cli')
 
 let argv = process.argv.slice(2)
@@ -18,7 +20,8 @@ let view = {
     body: function(file) {
 	let baseUrl = this.config.rss.baseUrl + '/' + file
 	return new lib.MarkdownParser(file).body({baseUrl})
-    }
+    },
+    path
 }
 
 if (!(view.config.rss && view.config.rss.baseUrl))
@@ -46,6 +49,9 @@ process.stdout.write(ejs.render(`<?xml version="1.0" encoding="utf-8"?>
     <category term="<%= tag %>" />
   <% } %>
   <content type="html"><%= body(post.file) %></content>
+  <% if (post.audio) { %>
+    <link rel="enclosure" type="<%- post.audio.type %>" length="<%- post.audio.length %>" href="<%= config.rss.baseUrl + '/' + path.join(path.dirname(post.file), post.audio.href) %>"/>
+  <% } %>
 </entry>
 <% } %>
 

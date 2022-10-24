@@ -10,6 +10,10 @@
     Latest update: <%- date_human(post.mtime) %>
   </p>
 
+  <% if (post.audio) { %>
+  <audio controls src="<%= path.join(path.dirname(post.file), post.audio.href) %>"></audio>
+  <% } %>
+
   <%- body(post.file) %>
 
   <br>Tags: <%- metatags_inline(root, 'tags', post.tags) %>

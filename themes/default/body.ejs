@@ -10,6 +10,8 @@
 
   <p>Latest update: <%- date_human(mtime) %></p>
 
+  <% if (audio) { %><audio controls src="<%= audio.href %>"></audio><% } %>
+
   <%- body %>
 
   <br>Tags: <%- metatags_inline(file, 'tags', tags) %>
