@@ -1,7 +1,7 @@
 # naif-blog-engine
 
-A Make-controlled static blog generator w/ FTS support; the offspring
-of the NIH syndrome.
+A Make-controlled static blog generator w/ FTS support & a podcast
+feed; the offspring of the NIH syndrome.
 
 Requires node & sqlite.
 
@@ -41,6 +41,22 @@ To write a new post:
 For the help:
 
     $ nbe-make help
+
+## Front matter
+
+* *subject* `string`;
+* *authors* `Array<string>` or just a comma-separated string;
+* *tags* `Array<string>`, or a comma-separated string;
+* *preprocessor* `string`: an external program that can read an .md
+  file from stdin & print to stdout the result, e.g. `erb -T 1`;
+* *audio* `string`: a path to a local audio file. This will
+  auto-inject HTML `<audio>` tag into a rendered post & add
+  `<enclosure>` tag to an RSS.
+
+## Default theme config
+
+* opt.quote: raw (not escaped!) HTML in the footer;
+* opt.avatar: a path to an image displayed above TOC.
 
 ## FTS
 
