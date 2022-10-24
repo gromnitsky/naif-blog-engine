@@ -21,9 +21,7 @@
 </main>
 
 <footer>
-  <p>
-    <%= get(config, 'theme.opt.quote', 'This is no time to bite the bullet with our synchronised incremental paradigm shifts.') %>
-  </p>
+  <%- get(config, 'theme.opt.quote', '<p>This is no time to bite the bullet with our synchronised incremental paradigm shifts.</p>') %>
 </footer>
 
 <script src="<%= path.join(root, 'lib.js') %>"></script>
