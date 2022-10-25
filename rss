@@ -14,8 +14,9 @@ let view = {
     get baseUrl() { return this.config.rss.baseUrl + '/rss.xml' },
     get posts() { return this.index.posts.slice(0,8) },
     get updated() {
-	let d = this.posts[0] ? this.posts[0].mtime : new Date(0)
-	return new Date(d).toISOString()
+        let d = new Date(0)
+        if (this.posts.length) d = Math.max(...this.posts.map(o => o.mtime))
+        return new Date(d).toUTCString()
     },
     body: function(file) {
 	let baseUrl = this.config.rss.baseUrl + '/' + file
@@ -28,31 +29,42 @@ if (!(view.config.rss && view.config.rss.baseUrl))
     lib.errx(1, `no rss.baseUrl prop in ${argv[1]}`)
 
 process.stdout.write(ejs.render(`<?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom">
+<rss version="2.0" xmlns:itunes="http://www.itunes.com/dtds/podcast-1.0.dtd" xmlns:content="http://purl.org/rss/1.0/modules/content/">
 
+<channel>
+<pubDate><%= updated %></pubDate>
 <title><%= config.title %></title>
-<link href="<%= baseUrl %>"/>
-<updated><%= updated %></updated>
-<id><%= baseUrl %></id>
+<description><%= config.desc %></description>
+<link><%= config.rss.baseUrl %></link>
+<language><%= config.rss.language %></language>
+<itunes:image href="<%= config.rss.baseUrl + '/' + config.rss.itunes.image %>"/>
+<itunes:explicit><%= config.rss.itunes.explicit %></itunes:explicit>
+<% for (let cat of (config.rss.itunes.categories || [])) { %>
+  <itunes:category text="<%= cat %>" />
+<% } %>
+<% if (config.rss.itunes.author) { %>
+<itunes:author><%= config.rss.itunes.author %></itunes:author>
+<% } %>
 
 <% for (let post of posts) {
      let permalink = config.rss.baseUrl + '/' + post.file.replace(/\\.md$/, '.html') %>
-<entry>
+<item>
   <title><%= post.subject %></title>
-  <link href="<%= permalink %>" />
-  <id><%= permalink %></id>
-  <updated><%= new Date(post.mtime).toISOString() %></updated>
+  <link><%= permalink %></link>
+  <guid><%= permalink %></guid>
+  <pubDate><%= new Date(post.mtime).toUTCString() %></pubDate>
   <% for (let author of post.authors) { %>
-    <author><name><%= author %></name></author>
+    <author>q@example.com (<%= author %>)</author>
   <% } %>
   <% for (let tag of post.tags) { %>
-    <category term="<%= tag %>" />
+    <category><%= tag %></category>
   <% } %>
-  <content type="html"><%= body(post.file) %></content>
+  <description><![CDATA[<%- body(post.file) %>]]></description>
   <% if (post.audio) { %>
-    <link rel="enclosure" type="<%- post.audio.type %>" length="<%- post.audio.length %>" href="<%= config.rss.baseUrl + '/' + path.join(path.dirname(post.file), post.audio.href) %>"/>
+    <enclosure type="<%- post.audio.type %>" length="<%- post.audio.length %>" url="<%= config.rss.baseUrl + '/' + path.join(path.dirname(post.file), post.audio.href) %>" />
   <% } %>
-</entry>
+</item>
 <% } %>
 
-</feed>`, view))
+</channel>
+</rss>`, view))

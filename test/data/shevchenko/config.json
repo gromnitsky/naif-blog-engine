@@ -7,7 +7,9 @@
     "title": "Щоденник Тараса Шевченко",
     "rss": {
         "baseUrl": "http://example.com/blog/",
-        "author": "Тарас Шевченко"
+        "itunes": {
+            "author": "Тарас Шевченко"
+        }
     },
     "nfts": {
         "parent_container": "body > main > section",

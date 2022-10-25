@@ -53,6 +53,20 @@ For the help:
   auto-inject HTML `<audio>` tag into a rendered post & add
   `<enclosure>` tag to an RSS.
 
+## RSS config
+
+Required by iTunes:
+
+* *desc* `String`: for `<description>` tag;
+* *rss.language* `String`: a 2-letter language code, e.g., `uk`;
+* *rss.itunes.categories* `Array<string>`;
+* *rss.itunes.image* `String`: a path to a local .png or .jpg;
+* *rss.itunes.explicit* `Boolean`;
+
+Optional:
+
+* *rss.itunes.author* `String`.
+
 ## Default theme config
 
 * opt.quote: raw (not escaped!) HTML in the footer;

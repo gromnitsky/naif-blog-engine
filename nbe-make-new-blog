@@ -23,9 +23,16 @@ define config :=
          "opt": {}
      },
     "title": "$(author)'s blog",
+    "desc": "FIXME",
     "rss": {
         "baseUrl": "http://example.com/blog/",
-        "author": "$(author)"
+        "language": "en-us",
+        "itunes": {
+            "categories": ["FIXME"],
+            "explicit": false,
+            "image": "FIXME.jpg",
+            "author": "$(author)"
+        }
     },
     "nfts": {
         "parent_container": "body > main > section",
