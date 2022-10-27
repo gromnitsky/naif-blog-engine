@@ -111,6 +111,16 @@ Optional:
 
 * *rss.itunes.author* `String`.
 
+To set a email for a particular author (instead of a default
+`nil@example.com`), add *emails* key with name↔email mappings:
+
+~~~
+"rss": { ... }
+"emails": {
+    "Tomasz Zbrożek": "tomasz@example.com"
+}
+~~~
+
 ## Default theme config
 
 * *theme.opt.quote* `String`: raw (not escaped!) HTML in the footer;

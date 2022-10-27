@@ -56,7 +56,7 @@ process.stdout.write(ejs.render(`<?xml version="1.0" encoding="utf-8"?>
   <guid><%= permalink %></guid>
   <pubDate><%= new Date(post.mtime).toUTCString() %></pubDate>
   <% for (let author of post.authors) { %>
-    <author>q@example.com (<%= author %>)</author>
+    <author><%= config?.emails?.[author] || 'nil@example.com' %> (<%= author %>)</author>
   <% } %>
   <% for (let tag of post.tags) { %>
     <category><%= tag %></category>
