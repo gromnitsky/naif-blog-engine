@@ -1,12 +1,13 @@
 # naif-blog-engine
 
-A Make-controlled static blog generator w/ FTS support & a podcast
-feed; the offspring of the NIH syndrome.
+A static blog generator powered by GNU Make, Node.js & SQLie. Includes
+support for podcast feeds & FTS (full text search).
 
-Requires node & sqlite.
+You write blog posts in markdown, and create [themes](themes/default)
+using ejs.
 
 A live example of the default theme:
-http://gromnitsky.users.sourceforge.net/blog/
+https://gromnitsky.users.sourceforge.net/blog/
 
 ## Install
 
@@ -24,10 +25,24 @@ Symlink `nbe-make` & `nbe-make-new-blog` to the PATH.
 ~~~
 $ nbe-make-new-blog out=my-blog
 $ cd my-blog
-$ nbe-make
+$ tree my-blog -a -I .git --dirsfirst --noreport
+my-blog
+├── 2022
+│   └── 10
+│       └── 27
+│           └── 0001.md
+├── pages
+│   └── about.md
+├── config.json
+├── .gitignore
+└── local.mk
 ~~~
 
-To test the results (`_out/web/`):
+To compile:
+
+    $ nbe-make
+
+To test the result (`_out/web/`):
 
 ~~~
 $ ruby -run -ehttpd _out/web/ -p8000
@@ -38,18 +53,47 @@ To write a new post:
 
     $ nbe-make new
 
-For the help:
+Help:
 
     $ nbe-make help
 
-## Front matter
+## FTS
 
-* *subject* `string`;
+By default, the FTS module is off. To enable, uncomment *nfts.server*
+key in `config.json` file:
+
+~~~
+"nfts": {
+    [...]
+    "server": "http://localhost:3000"
+}
+~~~
+
+To generate the db:
+
+    $ nbe-make fts-create
+
+This creates `_fts` dir that contains a separate repo that includes
+the db & a tiny http server that serves search queries. This repo can
+be deployed, for example, to Heroku w/o any modifications or you can
+test it locally:
+
+    $ nbe-make # this recompiles the blog, for config.json was updated
+    $ _fts/nfts-server _fts/db.sqlite3
+
+or just via
+
+    $ nbe-make fts-deploy
+
+## Front matter in blog posts
+
+* *subject* `String`;
 * *authors* `Array<string>` or just a comma-separated string;
 * *tags* `Array<string>`, or a comma-separated string;
-* *preprocessor* `string`: an external program that can read an .md
-  file from stdin & print to stdout the result, e.g. `erb -T 1`;
-* *audio* `string`: a path to a local audio file. This will
+* *preprocessor* `String`: an external stdin-to-stdout filter,
+  e.g. `erb -T 1`; its output is used as a source for markdown→html
+  conversion;
+* *audio* `String`: a path to a local audio file; this will
   auto-inject HTML `<audio>` tag into a rendered post & add
   `<enclosure>` tag to an RSS.
 
@@ -69,37 +113,12 @@ Optional:
 
 ## Default theme config
 
-* opt.quote: raw (not escaped!) HTML in the footer;
-* opt.avatar: a path to an image displayed above TOC.
+* *theme.opt.quote* `String`: raw (not escaped!) HTML in the footer;
+* *theme.opt.avatar* `String`: a path to an image displayed above TOC.
 
-## FTS
+## BUGS
 
-By default, the FTS module is off. To enable, uncomment the
-"nfts.server" key in `config.json` file that is located in the
-*generated* blog dir:
-
-~~~
-"nfts": {
-    [...]
-    "server": "http://localhost:3000"
-}
-~~~
-
-To generate the db:
-
-    $ nbe-make fts-create
-
-This creates `_fts` dir that contains a sep repo that includes the db
-& the tiny http server to serve search queries. This repo can be
-deployed, for example, to Heroku, w/o any modifications or it you can
-test it locally via running
-
-    $ nbe-make # this recompiles the blog, for config.json was updated
-    $ _fts/nfts-server _fts/db.sqlite3
-
-or just via
-
-    $ nbe-make fts-deploy
+Tested under Fedora only.
 
 ## License
 
