@@ -52,6 +52,7 @@ function convert(file, index, config, header, body, footer) {
 	relto = ''
 	view.root = relto
 	view.subject = 'Home'
+        view.postlink = common.postlink,
 	view.body = file => new lib.MarkdownParser(file).body({baseUrl: file})
 	break
     case 'metatags':

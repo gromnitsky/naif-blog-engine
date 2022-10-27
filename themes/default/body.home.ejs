@@ -11,7 +11,7 @@
   </p>
 
   <% if (post.audio) { %>
-  <audio controls src="<%= path.join(path.dirname(post.file), post.audio.href) %>"></audio>
+  <audio controls src="<%= postlink(post.audio.href, post.file) %>"></audio>
   <% } %>
 
   <%- body(post.file) %>

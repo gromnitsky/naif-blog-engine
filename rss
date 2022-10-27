@@ -4,6 +4,7 @@ let path = require('path')
 let ejs = require('ejs')
 
 let lib = require('./lib/cli')
+let common = require('./lib/common.js')
 
 let argv = process.argv.slice(2)
 if (argv.length !== 2) lib.errx(1, 'Usage:', lib.prog, 'index.json config.json')
@@ -22,6 +23,7 @@ let view = {
 	let baseUrl = this.config.rss.baseUrl + '/' + file
 	return new lib.MarkdownParser(file).body({baseUrl})
     },
+    postlink: common.postlink,
     path
 }
 
@@ -61,7 +63,7 @@ process.stdout.write(ejs.render(`<?xml version="1.0" encoding="utf-8"?>
   <% } %>
   <description><![CDATA[<%- body(post.file) %>]]></description>
   <% if (post.audio) { %>
-    <enclosure type="<%- post.audio.type %>" length="<%- post.audio.length %>" url="<%= config.rss.baseUrl + '/' + path.join(path.dirname(post.file), post.audio.href) %>" />
+    <enclosure type="<%- post.audio.type %>" length="<%- post.audio.length %>" url="<%= config.rss.baseUrl + '/' + postlink(post.audio.href, post.file) %>" />
   <% } %>
 </item>
 <% } %>
