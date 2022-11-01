@@ -113,7 +113,8 @@ $(web)/%.js: $(mk)/%.js
 js.src := $(wildcard $(mk)/*.js)
 js.dest := $(patsubst $(mk)/%, $(web)/%, $(js.src)) $(web)/lib.js
 js.dest.map := $(addsuffix .map,$(js.dest))
-vendor.src := chartist/dist/chartist.css chartist/dist/chartist.min.js
+vendor.src := chartist/dist/chartist.css chartist/dist/chartist.min.js \
+	endnotes/endnotes.js
 vendor.dest := $(addprefix $(web)/vendor/,$(vendor.src))
 
 $(web)/vendor/%: $(mk)/node_modules/%

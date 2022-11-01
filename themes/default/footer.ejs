@@ -33,3 +33,9 @@
 <script src="<%= path.join(root, 'vendor/chartist/dist/chartist.min.js') %>"></script>
 <script src="<%= path.join(root, 'authors_graph.js') %>"></script>
 <% } %>
+<% if (type !== 'metatags') { %>
+<script type="module">
+  import footnotes from "./<%= path.join(root, 'vendor/endnotes/endnotes.js') %>"
+  footnotes('a.footnote')
+</script>
+<% } %>
