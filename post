@@ -38,13 +38,14 @@ function convert(file, config, header, body, footer) {
 
     let markdown_parse = () => {
 	let mp = new lib.MarkdownParser(file)
-	let fm
+	let fm, body
         try {
             fm = mp.front_matter()
+            body = mp.body()
         } catch (e) {
             lib.errx(1, e.message)
         }
-	view = Object.assign(view, fm, { body: mp.body() })
+	view = Object.assign(view, fm, { body })
     }
 
     markdown_parse()
