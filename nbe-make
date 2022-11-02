@@ -152,7 +152,7 @@ check: compile
 	@diff -u should real; c=$$?; rm should real; exit $$c
 
 new.post := $(src)/$(shell mktemp -u `date +%Y/%m/%d`/XXXXXX.md)
-new.author = $(shell json < $(src)/config.json rss.author)
+new.author = $(shell json < $(src)/config.json rss.itunes.author)
 .PHONY: new
 new:
 	@mkdir -p $(dir $(new.post))
