@@ -48,6 +48,7 @@ compile := $(theme.dest)
 
 all.src := $(filter-out $(wildcard $(src)/*.mk) $(src)/.gitignore,\
   $(shell find $(src) ! -path "*/.git/*" ! -path '$(src)/$(out)/*' \
+               ! -path '*/node_modules/*' \
                ! -path '$(src)/$(fts)/*' ! -path '$(src)/themes/*' -type f))
 src.md := $(filter %.md, $(all.src))
 all.dest := $(patsubst $(src)/%, $(web)/%, $(all.src))
@@ -66,7 +67,7 @@ $(web)/%.html: $(src)/%.md $(src)/config.json $(call theme-get,header.ejs) $(cal
 # dir, when the post/page is `XXXX/page.md`
 #
 # $(call post-deps,$*)
-post-deps = $(patsubst $(src)/%, $(web)/%, $(wildcard $(src)/$1/*))
+post-deps = $(patsubst $(src)/%, $(web)/%, $(filter $(src)/$1/%, $(all.src)))
 
 $(web)/index.json: $(src.md)
 	$(mkdir)
