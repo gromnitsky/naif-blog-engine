@@ -127,7 +127,8 @@ compile += $(js.dest) $(vendor.dest)
 # a sitemap for the google console
 $(web)/sitemap.txt: $(web)/index.json
 	$(mkdir)
-	@echo "$(strip $(filter-out $(web)/google%.html,$(compile)))" | tr ' ' \\n | grep '\.html$$' | sort -r | sed 's|^$(web)/|$(shell json < config.json rss.baseUrl)|' > $@
+	@echo Generating $@
+	@echo "$(compile)" | tr ' ' \\n | grep '\.html$$' | grep -v 'google.*html' | grep -v '$(web)/[at]/' | sort -r | sed 's|^$(web)/|$(shell json < config.json rss.baseUrl)|' > $@
 
 compile += $(web)/sitemap.txt
 
