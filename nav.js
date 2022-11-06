@@ -1,11 +1,7 @@
-'use strict';
+import * as web from './lib.web.js'
+import common from './lib.common.js'
 
-let common = require('common')
-let web = require('web')
-
-document.addEventListener('DOMContentLoaded', function() {
-    web.getindex().then(widgets).then(mount)
-})
+web.getindex().then(widgets).then(mount)
 
 async function widgets(index) {
     let group_by_author = common.index_group_by(index, 'authors')

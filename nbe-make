@@ -103,20 +103,22 @@ $(web)/rss.xml: $(web)/index.json $(src)/config.json
 
 compile += $(web)/rss.xml
 
-$(web)/lib.js: $(mk)/lib/common.js $(mk)/lib/web.js
+# also makes $@.map source-map file
+$(web)/lib.%.js: $(mk)/lib/%.js
 	$(mkdir)
-	browserify -d -r $(mk)/lib/common:common -r $(mk)/lib/web:web | $(terser)
+	$(mk)/esbuild.mjs $< $@
+
+js.src := $(wildcard $(mk)/*.js)
+js.dest.lib := $(web)/lib.common.js $(web)/lib.web.js
+js.dest.lib.map := $(addsuffix .map,$(js.dest.lib))
+js.dest := $(patsubst $(mk)/%, $(web)/%, $(js.src)) $(js.dest.lib)
+vendor.src := chartist/dist/chartist.css chartist/dist/chartist.min.js \
+	endnotes/endnotes.js nfts/web.js
+vendor.dest := $(addprefix $(web)/vendor/,$(vendor.src))
 
 $(web)/%.js: $(mk)/%.js
 	$(mkdir)
-	browserify --im -d $< | $(terser)
-
-js.src := $(wildcard $(mk)/*.js)
-js.dest := $(patsubst $(mk)/%, $(web)/%, $(js.src)) $(web)/lib.js
-js.dest.map := $(addsuffix .map,$(js.dest))
-vendor.src := chartist/dist/chartist.css chartist/dist/chartist.min.js \
-	endnotes/endnotes.js
-vendor.dest := $(addprefix $(web)/vendor/,$(vendor.src))
+	$(copy)
 
 $(web)/vendor/%: $(mk)/node_modules/%
 	$(mkdir)
@@ -138,8 +140,6 @@ copy = cp $< $@
 mkdir = @mkdir -p $(dir $@)
 shellquote = '$(subst ','\'',$(1))'
 #'
-# also makes $@.map source-map file
-terser = terser -m --source-map content=inline,url=$(notdir $@).map -o $@
 
 .DELETE_ON_ERROR:
 
@@ -148,7 +148,7 @@ terser = terser -m --source-map content=inline,url=$(notdir $@).map -o $@
 # print a diff between should-be files & a real situation
 .PHONY: check
 check: compile
-	@echo $(js.dest.map) "$(strip $(compile))" | tr ' ' \\n | sort > should
+	@echo $(js.dest.lib.map) "$(strip $(compile))" | tr ' ' \\n | sort > should
 	@find $(web) -type f | sort > real
 	@diff -u should real; c=$$?; rm should real; exit $$c
 

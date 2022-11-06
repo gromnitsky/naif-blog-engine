@@ -1,6 +1,6 @@
 # naif-blog-engine
 
-A static blog generator powered by GNU Make, Node.js & SQLie. Includes
+A static blog generator powered by GNU Make, Node.js & SQLite. Includes
 support for podcast feeds & FTS (full text search).
 
 You write blog posts in markdown, and create [themes](themes/default)
@@ -12,7 +12,7 @@ https://gromnitsky.users.sourceforge.net/blog/
 ## Install
 
 ~~~
-# npm -g i json browserify terser
+# npm -g i json
 $ git clone ...
 $ cd naif-blog-engine
 $ npm i

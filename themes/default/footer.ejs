@@ -24,14 +24,14 @@
   <%- get(config, 'theme.opt.quote', '<p>This is no time to bite the bullet with our synchronised incremental paradigm shifts.</p>') %>
 </footer>
 
-<script src="<%= path.join(root, 'lib.js') %>"></script>
-<script src="<%= path.join(root, 'nav.js') %>"></script>
+<script type="module" src="<%= path.join(root, 'nav.js') %>"></script>
 <% if (config.nfts.server) { %>
-<script src="<%= path.join(root, 'fts.js') %>"></script>
+<script src="<%= path.join(root, 'vendor/nfts/web.js') %>"></script>
+<script type="module" src="<%= path.join(root, 'fts.js') %>"></script>
 <% } %>
 <% if (type === 'metatags') { %>
 <script src="<%= path.join(root, 'vendor/chartist/dist/chartist.min.js') %>"></script>
-<script src="<%= path.join(root, 'authors_graph.js') %>"></script>
+<script type="module" src="<%= path.join(root, 'authors_graph.js') %>"></script>
 <% } %>
 <% if (type !== 'metatags') { %>
 <script type="module">

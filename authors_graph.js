@@ -1,12 +1,9 @@
 /* global Chartist */
-'use strict';
 
-let common = require('common')
-let web = require('web')
+import * as web from './lib.web.js'
+import common from './lib.common.js'
 
-document.addEventListener('DOMContentLoaded', () => {
-    web.getindex().then(plot)
-})
+web.getindex().then(plot)
 
 function plot(index) {
     if (author() === 'anonymous') return
