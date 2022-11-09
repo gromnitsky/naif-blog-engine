@@ -6,6 +6,37 @@
   --site-max-width: 950px;
   --post-max-width: 700px;
   --nav-max-width: 240px;
+  --banner-bg: cornsilk;
+  --banner-fg: #191919;
+  --target-bg: gold;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --body-fg: #cdcdcd;
+    --body-bg: #1b1b1b;
+    --faint-gray: #252525;
+    --light-gray: #505050;
+    --banner-bg: #4b0202;
+    --banner-fg: #fafafa;
+  }
+
+  body { background: var(--body-bg); }
+
+  a { color: cornflowerblue; }
+  a:visited { color: hotpink; }
+
+  .nbe__search > img { filter: invert(100%); }
+
+  input {
+    background-color: var(--body-bg);
+    color: var(--body-fg);
+    border-color: var(--body-fg);
+  }
+
+  body > main > nav > img[alt="avatar"] { filter: invert(100%); }
+
+  .banner a { color: hotpink; }
 }
 
 @media (min-width: 980px) {
@@ -66,7 +97,7 @@ pre {
   white-space: pre-wrap;
 }
 
-:target { background: gold; }
+:target { background: var(--target-bg); }
 
 a.footnote { vertical-align: super; }
 
@@ -134,6 +165,12 @@ hr {
 
 audio { width: 100%; }
 
+.banner {
+  background: var(--banner-bg);
+  color: var(--banner-fg);
+  padding: 1em;
+}
+
 /* the holy grail */
 
 body > main { display: flex; }
@@ -198,4 +235,18 @@ body > main > nav {
   background: cornsilk;
   border: 1px solid var(--body-fg);
   padding: 5px;
+}
+
+@media (prefers-color-scheme: dark) {
+  #nbe__authors__graph svg { filter: invert(100%); }
+  #nbe__authors__graph .ct-label { color: #252525; }
+  #nbe__authors__graph__tooltip { color: #191919; }
+}
+
+/* https://github.com/gromnitsky/endnotes */
+@media (prefers-color-scheme: dark) {
+  #footnotes_dialog_12c1b560_content {
+    background: var(--body-bg) !important;
+    color: var(--body-fg) !important;
+  }
 }
