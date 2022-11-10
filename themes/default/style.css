@@ -34,7 +34,7 @@
     border-color: var(--body-fg);
   }
 
-  body > main > nav > img[alt="avatar"] { filter: invert(100%); }
+  body > main > nav img[alt="avatar"] { filter: invert(100%); }
 
   .banner a { color: hotpink; }
 }
@@ -108,7 +108,7 @@ summary:hover:not(:last-child) { background: var(--light-gray); }
 summary > a { width: 100%; }
 summary > a:hover { background: var(--light-gray); }
 
-body > main > nav > img {
+body > main > nav img[alt="avatar"] {
   border-radius: 6px;
   margin: var(--gutter) 0;
 }
@@ -191,16 +191,19 @@ body > main > nav {
   border-right: 1px dotted var(--body-fg);
 }
 
+/* too narrow to support 2 columns */
 @media (max-width: 949px) {
-  /* too narrow to support 2 columns */
   body > main { flex-flow: column; }
 
-  body > main > section { padding-left: 0; }
+  body > main > section {
+    padding-left: 0;
+    width: 100%;
+    margin: 0 auto;
+  }
 
   body > main > section,
   body > main > nav {
     order: 0;
-    width: auto;
   }
 
   body > main > nav {
@@ -208,9 +211,20 @@ body > main > nav {
     border-top: 1px dotted var(--body-fg);
     padding-right: 0;
     border-right: 0;
+    width: auto;
   }
 
-  body > main > nav > img { display: none; }
+  body > main > nav img[alt="avatar"] { display: none; }
+}
+
+/* nav in 2 columns when a screen is small but not too narrow */
+@media (max-width: 949px) and (min-width: 600px) {
+  body > main > nav {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    column-gap: var(--gutter);
+    margin-bottom: 1em;
+  }
 }
 
 @media print {

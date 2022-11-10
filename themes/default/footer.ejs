@@ -1,21 +1,25 @@
   <nav>
-    <img src='<%= path.join(root, get(config, 'theme.opt.avatar', 'avatar.svg')) %>' alt='avatar'>
+    <div>
+      <img src='<%= path.join(root, get(config, 'theme.opt.avatar', 'avatar.svg')) %>' alt='avatar'>
 
-    <p>
-      <a href="<%= path.join(root, 'rss.xml') %>"><img src='<%= path.join(root, 'rss.svg') %>' style="height: 1em" alt="">
-	Subscribe
-      </a>
-    </p>
+      <p>
+        <a href="<%= path.join(root, 'rss.xml') %>"><img src='<%= path.join(root, 'rss.svg') %>' style="height: 1em" alt="">
+	  Subscribe
+        </a>
+      </p>
 
-    <div id="nbe__contents--pages">&there4;</div>
-    <br>
-    <div id="nbe__contents--posts">&there4;</div>
+      <div id="nbe__contents--pages">&there4;</div>
+      <br>
+      <div id="nbe__contents--posts">&there4;</div>
+    </div>
 
-    <p>Authors</p>
-    <div id="nbe__metatags--authors">&there4;</div>
+    <div>
+      <p>Authors</p>
+      <div id="nbe__metatags--authors">&there4;</div>
 
-    <p>Tags</p>
-    <div id="nbe__metatags--tags">&there4;</div>
+      <p>Tags</p>
+      <div id="nbe__metatags--tags">&there4;</div>
+    </div>
   </nav>
 
 </main>
