@@ -60,8 +60,11 @@ function convert(file, index, config, header, body, footer) {
 	view.root = relto
 	view.subject = 'Home'
         view.postlink = common.postlink
-        view.body = md_file => {
-            return fix_rel_links(new lib.MarkdownParser(md_file).body(), md_file)
+        view.body = md_filename => {
+            let md = new lib.MarkdownParser(md_filename)
+            return md.rewrite_links(md.body(), old_path => {
+                return common.postlink(old_path, md_filename)
+            })
         }
 	break
     case 'metatags':
@@ -85,23 +88,3 @@ function metatags(group, target) {
     }
     throw new Error(`failed to find ${target}`)
 }
-
-function fix_rel_links(html, md_filename) {
-    let $ = cheerio.load(html, null, false)
-    $('a,img,audio,video').filter( (_, el) => { // get nodes with relative urls
-        try {
-            new URL($(el).attr(element_src_attr(el)))
-        } catch (_) {
-            return true
-        }
-        return false
-    }).map( (_, el) => {
-        let src = element_src_attr(el)
-        let path = $(el).attr(src)
-        $(el).attr(src, common.postlink(path, md_filename))
-    })
-
-    return $.html()
-}
-
-function element_src_attr(el) { return el.name === 'a' ? 'href' : 'src' }

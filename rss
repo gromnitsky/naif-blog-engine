@@ -20,9 +20,11 @@ let view = {
         return new Date(d).toUTCString()
     },
     body: function(file) {
-        // FIXME: cheerio instead of baseUrl (see 'metadata' for the example)
-	let baseUrl = this.config.rss.baseUrl + '/' + file
-	return new lib.MarkdownParser(file).body({baseUrl})
+        let baseUrl = this.config.rss.baseUrl + '/' + file
+        let mp = new lib.MarkdownParser(file)
+        return mp.rewrite_links(mp.body({baseUrl}), old_path => {
+            return this.config.rss.baseUrl + '/' + old_path
+        })
     },
     postlink: common.postlink,
     path
