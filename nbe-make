@@ -130,7 +130,7 @@ compile += $(js.dest) $(vendor.dest)
 $(web)/sitemap.txt: $(web)/index.json
 	$(mkdir)
 	@echo Generating $@
-	@echo "$(compile)" | tr ' ' \\n | grep '\.html$$' | grep -v 'google.*html' | grep -v '$(web)/[at]/' | sort -r | sed 's|^$(web)/|$(shell json < config.json rss.baseUrl)|' > $@
+	@echo "$(compile)" | tr ' ' \\n | grep '\.html$$' | grep -v 'google.*html' | grep -v '$(web)/[at]/' | sort -r | sed 's|^$(web)|$(shell json < config.json rss.baseUrl)|' > $@
 
 compile += $(web)/sitemap.txt
 
