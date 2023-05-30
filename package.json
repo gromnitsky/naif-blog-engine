@@ -3,13 +3,15 @@
         "@esbuild-plugins/node-modules-polyfill": "^0.2.2",
         "blueimp-md5": "^2.10.0",
         "chartist": "^0.11.0",
+        "cheerio": "^1.0.0-rc.12",
         "ejs": "^3.1.9",
         "endnotes": "^0.0.2",
         "ent": "^2.2.0",
         "esbuild": "^0.17.19",
         "front-matter": "^4.0.2",
         "lodash.get": "^4.4.2",
-        "marked": "^4.3.0",
+        "marked": "^5.0.3",
+        "marked-base-url": "^1.0.1",
         "mime": "^3.0.0",
         "nfts": "0.0.5"
     }

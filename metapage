@@ -5,6 +5,7 @@ let path = require('path')
 let ejs = require('ejs')
 let md5 = require('blueimp-md5')
 let get = require('lodash.get')
+let cheerio = require('cheerio')
 let lib = require('./lib/cli')
 let common = require('./lib/common')
 
@@ -58,13 +59,10 @@ function convert(file, index, config, header, body, footer) {
 	relto = ''
 	view.root = relto
 	view.subject = 'Home'
-        view.postlink = common.postlink,
-        // this won't work with marked v5: its plugin requires baseUrl
-        // contain a scheme
-        //
-        // FIXME: abandon baseUrl, use cheerio to search for relative
-        // links/images in resulting html
-	view.body = md_file => new lib.MarkdownParser(md_file).body({baseUrl: md_file})
+        view.postlink = common.postlink
+        view.body = md_file => {
+            return fix_rel_links(new lib.MarkdownParser(md_file).body(), md_file)
+        }
 	break
     case 'metatags':
 	view.subject = metatags(view['group_by_'+path.dirname(file)],
@@ -87,3 +85,23 @@ function metatags(group, target) {
     }
     throw new Error(`failed to find ${target}`)
 }
+
+function fix_rel_links(html, md_filename) {
+    let $ = cheerio.load(html, null, false)
+    $('a,img,audio,video').filter( (_, el) => { // get nodes with relative urls
+        try {
+            new URL($(el).attr(element_src_attr(el)))
+        } catch (_) {
+            return true
+        }
+        return false
+    }).map( (_, el) => {
+        let src = element_src_attr(el)
+        let path = $(el).attr(src)
+        $(el).attr(src, common.postlink(path, md_filename))
+    })
+
+    return $.html()
+}
+
+function element_src_attr(el) { return el.name === 'a' ? 'href' : 'src' }

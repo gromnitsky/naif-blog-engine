@@ -20,6 +20,7 @@ let view = {
         return new Date(d).toUTCString()
     },
     body: function(file) {
+        // FIXME: cheerio instead of baseUrl (see 'metadata' for the example)
 	let baseUrl = this.config.rss.baseUrl + '/' + file
 	return new lib.MarkdownParser(file).body({baseUrl})
     },
