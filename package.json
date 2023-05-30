@@ -1,15 +1,15 @@
 {
     "dependencies": {
-        "@esbuild-plugins/node-modules-polyfill": "^0.1.4",
+        "@esbuild-plugins/node-modules-polyfill": "^0.2.2",
         "blueimp-md5": "^2.10.0",
         "chartist": "^0.11.0",
-        "ejs": "^3.1.8",
+        "ejs": "^3.1.9",
         "endnotes": "^0.0.2",
         "ent": "^2.2.0",
-        "esbuild": "^0.15.13",
+        "esbuild": "^0.17.19",
         "front-matter": "^4.0.2",
         "lodash.get": "^4.4.2",
-        "marked": "^4.0.19",
+        "marked": "^4.3.0",
         "mime": "^3.0.0",
         "nfts": "0.0.5"
     }

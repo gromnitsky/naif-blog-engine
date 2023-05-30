@@ -59,7 +59,12 @@ function convert(file, index, config, header, body, footer) {
 	view.root = relto
 	view.subject = 'Home'
         view.postlink = common.postlink,
-	view.body = file => new lib.MarkdownParser(file).body({baseUrl: file})
+        // this won't work with marked v5: its plugin requires baseUrl
+        // contain a scheme
+        //
+        // FIXME: abandon baseUrl, use cheerio to search for relative
+        // links/images in resulting html
+	view.body = md_file => new lib.MarkdownParser(md_file).body({baseUrl: md_file})
 	break
     case 'metatags':
 	view.subject = metatags(view['group_by_'+path.dirname(file)],
