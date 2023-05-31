@@ -128,29 +128,35 @@ nav.prevnext a {
 }
 
 body > header {
+  font-variant: small-caps;
   border-bottom: 1px dotted var(--body-fg);
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
+  gap: 0.2em;
 }
+
+body > header > h1 { margin: 0.2em 0; }
 
 body > header .nbe__search {
   height: 2em;
-  flex-grow: 0.3;
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
+  flex-basis: 20%;
 }
-
-.nbe__search > img { height: inherit; }
 
 #nfts__dialog {
   border-bottom: 1px dotted var(--body-fg);
   padding: var(--gutter) 0;
 }
 
-#nfts__dialog > div { margin-top: 1em; }
+#nfts__dialog  input {
+  font-size: 130%;
+  font-family: monospace;
+  width: 100%;
+}
 
-body > header > h1 { margin: 0.2em; }
+#nfts__dialog > div { margin-top: 1em; }
 
 body > footer {
   border-top: 1px dotted var(--body-fg);
