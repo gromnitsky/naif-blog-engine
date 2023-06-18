@@ -23,7 +23,8 @@ let view = {
         let baseUrl = this.config.rss.baseUrl + '/' + file
         let mp = new lib.MarkdownParser(file)
         return mp.rewrite_links(mp.body({baseUrl}), old_path => {
-            return this.config.rss.baseUrl + '/' + old_path
+            return this.config.rss.baseUrl + '/'
+                + path.dirname(file) + '/' + old_path
         })
     },
     postlink: common.postlink,
