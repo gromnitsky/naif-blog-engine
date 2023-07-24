@@ -5,7 +5,7 @@
         "chartist": "^0.11.0",
         "cheerio": "^1.0.0-rc.12",
         "ejs": "^3.1.9",
-        "endnotes": "^0.0.2",
+        "endnotes": "~0.0.3",
         "ent": "^2.2.0",
         "esbuild": "^0.17.19",
         "front-matter": "^4.0.2",
