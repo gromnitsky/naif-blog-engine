@@ -99,8 +99,6 @@ pre {
 
 :target { background: var(--target-bg); }
 
-a.footnote { vertical-align: super; }
-
 summary { word-wrap: break-word; }
 summary:not(:last-child) { cursor: pointer; }
 summary:only-child { display: flex; }
