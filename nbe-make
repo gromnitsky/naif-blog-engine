@@ -179,10 +179,15 @@ help:; $(info $(help))@:
 
 
 fts.db := $(fts)/db.sqlite3
+fts.md.dest := $(patsubst $(src)/%, $(fts)/src/%, $(src.md))
 
-$(fts.db): $(src.md)
+$(fts)/src/%.md: $(src)/%.md
 	$(mkdir)
-	$(mk)/node_modules/nfts/nfts-create -o $@ $^
+	$(mk)/markdown $< > $@
+
+$(fts.db): $(fts.md.dest)
+	$(mkdir)
+	$(mk)/node_modules/nfts/nfts-create -p $(fts)/src/ -o $@ $^
 
 $(fts)/.gitignore: $(fts.db)
 	$(file > $(fts)/package.json,$(fts.package.json))
@@ -190,6 +195,7 @@ $(fts)/.gitignore: $(fts.db)
 	cp $(mk)/node_modules/nfts/nfts-server $(fts)
 	cp $(mk)/node_modules/nfts/lib/finder.js $(fts)/lib
 	echo node_modules > $@
+	echo src > $@
 	git -C $(fts) init
 	git -C $(fts) add .
 	-git -C $(fts) commit -m upd
