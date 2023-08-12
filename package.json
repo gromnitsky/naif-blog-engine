@@ -7,12 +7,12 @@
         "ejs": "^3.1.9",
         "endnotes": "~0.0.3",
         "ent": "^2.2.0",
-        "esbuild": "^0.17.19",
+        "esbuild": "^0.19.1",
         "front-matter": "^4.0.2",
         "lodash.get": "^4.4.2",
-        "marked": "^5.0.3",
+        "marked": "^7.0.2",
         "marked-base-url": "^1.0.1",
         "mime": "^3.0.0",
-        "nfts": "0.0.6"
+        "nfts": "0.1.0"
     }
 }
