@@ -37,6 +37,12 @@
   body > main > nav img[src="avatar.svg"] { filter: invert(100%); }
 
   .banner a { color: hotpink; }
+
+  img.bw { filter: invert(70%); }
+}
+
+@media (prefers-color-scheme: light) {
+  img.bw { filter: invert(20%); }
 }
 
 @media (min-width: 980px) {
