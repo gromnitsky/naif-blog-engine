@@ -206,7 +206,7 @@ define fts.package.json :=
   "type": "module",
   "scripts": { "start": "node nfts-server.js db.sqlite3" },
   "dependencies": {
-    "better-sqlite3": "^8.5.0"
+    "better-sqlite3": "^9.4.1"
   }
 }
 endef
