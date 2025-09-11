@@ -162,6 +162,8 @@ new:
 	$$EDITOR $(new.post) &
 
 define help :=
+node $(shell node -v)
+
 if the build fails, rm $(web)/index.json, then try again
 
 compile		(default)
