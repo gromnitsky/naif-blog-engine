@@ -6,8 +6,7 @@ support for podcast feeds & FTS (full text search).
 You write blog posts in markdown, and create [themes](themes/default)
 using ejs.
 
-A live example of the default theme:
-https://gromnitsky.users.sourceforge.net/blog/
+A live example of the default theme: https://sigwait.org/~alex/blog/
 
 ## Install
 
