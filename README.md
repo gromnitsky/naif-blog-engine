@@ -4,11 +4,13 @@ A static blog generator powered by GNU Make, Node.js & SQLite. Includes
 support for podcast feeds & FTS (full text search).
 
 You write blog posts in markdown, and create [themes](themes/default)
-using ejs.
+using [EJS](https://github.com/mde/ejs).
 
 A live example of the default theme: https://sigwait.org/~alex/blog/
 
 ## Install
+
+Node 24+.
 
 ~~~
 # npm -g i json
@@ -68,21 +70,12 @@ key in `config.json` file:
 }
 ~~~
 
-To generate the db:
+& rerun `nbe-make`. To generate the db:
 
-    $ nbe-make fts-create
+    $ nbe-make fts
 
-This creates `_fts` dir that contains a separate repo that includes
-the db & a tiny http server that serves search queries. This repo can
-be deployed, for example, to Heroku w/o any modifications or you can
-test it locally:
-
-    $ nbe-make # this recompiles the blog, for config.json was updated
-    $ _fts/nfts-server _fts/db.sqlite3
-
-or just via
-
-    $ nbe-make fts-deploy
+This creates `_out/web/nfts.sqlite3` file. For a local test, run
+`nbe-make fts-run`.
 
 ## Front matter in blog posts
 
@@ -125,9 +118,9 @@ To set a email for a particular author (instead of a default
 * *theme.opt.quote* `String`: raw (not escaped!) HTML in the footer;
 * *theme.opt.avatar* `String`: a path to an image displayed above TOC.
 
-## BUGS
+## See also
 
-Tested under Fedora only.
+[nfts](https://github.com/gromnitsky/nfts)
 
 ## License
 
