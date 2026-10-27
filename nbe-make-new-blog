@@ -12,7 +12,6 @@ new:
 	$(file > $(post.dest),$(post))
 	$(file > $(out)/pages/about.md,$(page_about))
 	cp $(mk)/test/data/shevchenko/local.mk $(out)
-	echo _fts >> $(out)/.gitignore
 	echo _out >> $(out)/.gitignore
 	cd $(out) && git init && git add . && git commit -m 'init blog'
 
@@ -35,8 +34,8 @@ define config :=
         }
     },
     "nfts": {
-        "parent_container": "body > main > section",
-        "dialog_toggle_btn": ".nbe__search",
+        "container": "body > main > section",
+        "toggle_button": ".nbe__search",
         "//server": "http://localhost:3000"
     }
 }

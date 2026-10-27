@@ -29,10 +29,6 @@
 </footer>
 
 <script type="module" src="<%= path.join(root, 'nav.js') %>"></script>
-<% if (config.nfts.server) { %>
-<script src="<%= path.join(root, 'vendor/nfts/web.js') %>"></script>
-<script type="module" src="<%= path.join(root, 'fts.js') %>"></script>
-<% } %>
 <% if (type === 'metatags') { %>
 <script src="<%= path.join(root, 'vendor/chartist/dist/chartist.min.js') %>"></script>
 <script type="module" src="<%= path.join(root, 'authors_graph.js') %>"></script>
@@ -41,5 +37,24 @@
 <script type="module">
   import footnotes from "./<%= path.join(root, 'vendor/endnotes/endnotes.js') %>"
   footnotes('a.footnote')
+</script>
+<% } %>
+<% if (config.nfts.server) { %>
+<script type="module">
+  import * as web from "./<%= path.join(root, 'lib.web.js') %>"
+  import common from "./<%= path.join(root, 'lib.common.js') %>"
+  import * as nfts from "./<%= path.join(root, 'vendor/nfts/web.js') %>"
+
+  async function main() {
+      let relto = web.relto()
+      new nfts.Frame((await web.getconf()).nfts,
+          fm => common.link(fm.file, relto),
+          author => common.metatags_link(relto, 'authors', author),
+          tag => common.metatags_link(relto, 'tags', tag))
+      let btn = document.querySelector('.nbe__search')
+      if (btn) btn.style.visibility = "visible"
+  }
+
+  main()
 </script>
 <% } %>

@@ -149,18 +149,16 @@ body > header .nbe__search {
   flex-basis: 20%;
 }
 
-#nfts__dialog {
+.nfts__frame {
   border-bottom: 1px dotted var(--body-fg);
   padding: var(--gutter) 0;
 }
 
-#nfts__dialog  input {
+.nfts__frame input {
   font-size: 130%;
   font-family: monospace;
   width: 100%;
 }
-
-#nfts__dialog > div { margin-top: 1em; }
 
 body > footer {
   border-top: 1px dotted var(--body-fg);

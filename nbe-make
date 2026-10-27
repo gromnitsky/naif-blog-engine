@@ -2,7 +2,6 @@
 
 src := .
 out := _out
-fts := _fts
 web := $(out)/web
 
 # Startup check #1
@@ -49,7 +48,7 @@ compile := $(theme.dest)
 all.src := $(filter-out $(wildcard $(src)/*.mk) $(src)/.gitignore,\
   $(shell find $(src) ! -path "*/.git/*" ! -path '$(src)/$(out)/*' \
                ! -path '*/node_modules/*' \
-               ! -path '$(src)/$(fts)/*' ! -path '$(src)/themes/*' -type f))
+               ! -path '$(src)/themes/*' -type f))
 src.md := $(filter %.md, $(all.src))
 all.dest := $(patsubst $(src)/%, $(web)/%, $(all.src))
 html.dest := $(patsubst %.md, %.html, $(filter %.md, $(all.dest)))
@@ -150,7 +149,7 @@ shellquote = '$(subst ','\'',$(1))'
 check: compile
 	@echo $(js.dest.lib.map) "$(strip $(compile))" | tr ' ' \\n | sort > should
 	@find $(web) -type f | sort > real
-	@diff -u should real; c=$$?; rm should real; exit $$c
+	@diff -u -I $(fts.db) should real; c=$$?; rm should real; exit $$c
 
 new.post := $(src)/$(shell mktemp -u `date +%Y/%m/%d`/XXXXXX.md)
 new.author = $(shell json < $(src)/config.json rss.itunes.author)
@@ -169,7 +168,7 @@ if the build fails, rm $(web)/index.json, then try again
 compile		(default)
 new		create a new blog post
 check		check for superfluous files in $(web)
-fts-create	recreate the FTS db+server in $(fts)
+fts		recreate the FTS db
 
 $(web)/yyyy/mm/dd/post.html	compile only 1 particular post
 -f ~/lib/debug.mk pp-compile	print all file targets
@@ -180,7 +179,8 @@ help:; $(info $(help))@:
 
 
 
-fts.db := $(fts)/db.sqlite3
+fts := $(out)/fts
+fts.db := $(web)/nfts.sqlite3
 fts.md.dest := $(patsubst $(src)/%, $(fts)/src/%, $(src.md))
 
 $(fts)/src/%.md: $(src)/%.md
@@ -189,28 +189,10 @@ $(fts)/src/%.md: $(src)/%.md
 
 $(fts.db): $(fts.md.dest)
 	$(mkdir)
-	$(mk)/node_modules/.bin/nfts-create -p $(fts)/src/ -o $@ $^
+	rm -f $@
+	$(mk)/node_modules/.bin/nfts-add -o $(fts.db) -s $(fts)/src/ $^
 
-$(fts)/.gitignore: $(fts.db)
-	$(file > $(fts)/package.json,$(fts.package.json))
-	cp $(mk)/node_modules/nfts/nfts-server.js $(fts)
-	echo node_modules > $@
-	echo src >> $@
-	git -C $(fts) init
-	git -C $(fts) add .
-	-git -C $(fts) commit -m upd
-
-.PHONY: fts-create
-fts-create: $(fts)/.gitignore
-
-define fts.package.json :=
-{
-  "type": "module",
-  "scripts": { "start": "node nfts-server.js db.sqlite3" },
-  "dependencies": {
-    "better-sqlite3": "^13.0.3"
-  }
-}
-endef
+.PHONY: fts
+fts: $(fts.db)
 
 -include $(src)/local.mk

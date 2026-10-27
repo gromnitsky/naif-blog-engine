@@ -12,8 +12,8 @@
         }
     },
     "nfts": {
-        "parent_container": "body > main > section",
-        "dialog_toggle_btn": ".nbe__search",
+        "container": "body > main > section",
+        "toggle_button": ".nbe__search",
         "server": "http://localhost:3000"
     },
     "emails": {

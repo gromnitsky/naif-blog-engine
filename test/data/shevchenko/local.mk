@@ -14,21 +14,19 @@ help += $(help.local)
 
 
 
-# edit this
-.PHONY: fts-deploy
-fts-deploy: fts-kill fts-create check
+.PHONY: fts-run
+fts-run: fts-kill fts check
 	$(fts.server) &
 
-# edit this
 .PHONY: fts-kill
 fts-kill:
 	-pkill -f '$(fts.server)'
 
-fts.server := node $(fts)/nfts-server $(fts.db)
+fts.server := node $(mk)/node_modules/.bin/nfts-server $(fts.db)
 
 define help.local :=
 
-fts-deploy	run `$(fts.server)`
+fts-run		run `$(fts.server)`
 fts-kill	kill the FTS server process
 endef
 help += $(help.local)
