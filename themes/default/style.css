@@ -106,6 +106,7 @@ pre {
 
 :target { background: var(--target-bg); }
 
+nav details details { margin-left: 1em; }
 nav summary { cursor: pointer; }
 nav summary:hover { background: var(--light-gray); }
 

@@ -8,16 +8,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" type="image/png" href="<%= path.join(root, 'favicon.png') %>">
 <link rel="alternate" type="application/rss+xml" href="<%= path.join(root, 'rss.xml') %>">
-<style>
-  /* 'contents' widget */
-  summary:only-child::-webkit-details-marker { display: none; }
-  summary:only-child { list-style-type: none; }
-  summary:only-child::before {
-    content: "\2022"; /* circle */
-    margin-right: 0.5em;
-  }
-  details details { margin-left: 1em; }
-</style>
 <link rel="stylesheet" href="<%= path.join(root, 'style.css') %>">
 <% if (type === 'metatags') { %>
 <link rel="stylesheet" href="<%= path.join(root, 'vendor/chartist/dist/chartist.css') %>">
