@@ -57,6 +57,7 @@ body {
   color: var(--body-fg);
   font-family: Georgia, serif;
   margin-top: 0;
+  overflow-y: scroll;
 }
 
 a { text-decoration: none; }
@@ -105,12 +106,18 @@ pre {
 
 :target { background: var(--target-bg); }
 
-summary { word-wrap: break-word; }
-summary:not(:last-child) { cursor: pointer; }
-summary:only-child { display: flex; }
-summary:hover:not(:last-child) { background: var(--light-gray); }
-summary > a { width: 100%; }
-summary > a:hover { background: var(--light-gray); }
+nav summary { cursor: pointer; }
+nav summary:hover { background: var(--light-gray); }
+
+.nbe__content__tree_leaf {
+  display: flex;
+  gap: 0.5em;
+  word-break: break-word;
+}
+
+details .nbe__content__tree_leaf { margin-left: 1em; }
+.nbe__content__tree_leaf a { width: 100%; }
+.nbe__content__tree_leaf a:hover { background: var(--light-gray); }
 
 body > main > nav img[alt="avatar"] {
   border-radius: 6px;

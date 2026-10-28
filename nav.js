@@ -198,17 +198,17 @@ function contents(file, index) {
     function tree(tnode, file) {
 	let r = []
 	tnode.kids.forEach( kid => {
-	    r.push(`<details ${kid.selected ? 'open' : ''}>`)
 	    if (!kid.kids.length) {
 		if (kid.selected)
-		    r.push(`<summary class="selected"><b>${common.e(kid.payload.subject)}</b></summary>`)
+                    r.push(`<span class="nbe__content__tree_leaf">&bullet; <b class="selected">${common.e(kid.payload.subject)}</b></span>`)
 		else
-		    r.push(`<summary><a href="${common.e(common.link(kid.payload.file, file))}">${common.e(kid.payload.subject)}</a></summary>`)
+                    r.push(`<span class="nbe__content__tree_leaf">&bullet; <a href="${common.e(common.link(kid.payload.file, file))}">${common.e(kid.payload.subject)}</a></span>`)
 	    } else {
+	        r.push(`<details ${kid.selected ? 'open' : ''}>`)
 		r.push(`<summary>${common.e(kid.name)}</summary>`)
 		r.push(tree(kid, file))
+	        r.push('</details>')
 	    }
-	    r.push('</details>')
 	})
 	return r.join('\n')
     }
