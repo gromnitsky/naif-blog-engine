@@ -125,11 +125,11 @@ $(web)/vendor/%: $(mk)/node_modules/%
 
 compile += $(js.dest) $(vendor.dest)
 
-# a sitemap for the google console
+# google console sitemap
 $(web)/sitemap.txt: $(web)/index.json
 	$(mkdir)
 	@echo Generating $@
-	@echo "$(compile)" | tr ' ' \\n | grep '\.html$$' | grep -v 'google.*html' | grep -v '$(web)/[a]/' | sort -r | sed 's|^$(web)|$(shell json < config.json rss.baseUrl)|' > $@
+	@echo "$(compile)" | tr ' ' \\n | grep '\.html$$' | grep -v 'google.*html' | grep -v '$(web)/[at]/' | sed 's|^$(web)/||' | sort -rn | awk -v p="`json < config.json rss.baseUrl`/" '{print p $$0}' > $@
 
 compile += $(web)/sitemap.txt
 
